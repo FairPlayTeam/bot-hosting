@@ -1,0 +1,7 @@
+.env
+bun.lock
+node_modules
+categories.json
+roles.json
+queue.json
+tickets.json
