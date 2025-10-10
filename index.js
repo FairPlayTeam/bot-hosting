@@ -1,8 +1,7 @@
-import dotenv from 'dotenv'
-dotenv.config()
+require('dotenv').config()
+const token = process.env.TOKEN
 
-import fs from 'fs'
-import {
+const {
   Client,
   GatewayIntentBits,
   SlashCommandBuilder,
@@ -14,9 +13,7 @@ import {
   TextDisplayBuilder,
   ContainerBuilder,
   Events,
-} from 'discord.js'
-
-const token = process.env.TOKEN
+} = require('discord.js')
 
 const client = new Client({
   intents: [
@@ -31,7 +28,7 @@ const client = new Client({
     status: 'online',
     activities: [
       {
-        name: 'Regarde les demandes de tickets',
+        name: 'Watch tickets askings',
         type: ActivityType.Watching,
       },
     ],
