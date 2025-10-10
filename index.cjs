@@ -122,9 +122,13 @@ client.on(Events.InteractionCreate, async interaction => {
       .addTextDisplayComponents(text)
       .addActionRowComponents(actionRowMenu)
 
-    await interaction.editReply({
+    await interaction.channel.send({
       flags: MessageFlags.IsComponentsV2,
       components: [container],
+    })
+
+    await interaction.editReply({
+      content: 'The container has been sent!'
     })
   }
 })
