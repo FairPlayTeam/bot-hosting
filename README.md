@@ -1,7 +1,5 @@
-https://bun.sh to install bun
+`npm run depsinstall` to install the depandicies
 
-`bun i` to install the deps
+`npm run dev` to modify the code
 
-`bun dev` to start with watchdog
-
-`bun run index.js` to start without watchdog
+`npm run start` to launch 
