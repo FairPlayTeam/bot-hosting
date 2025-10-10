@@ -106,7 +106,7 @@ client.on(Events.InteractionCreate, async interaction => {
 
     const optionFrench = new StringSelectMenuOptionBuilder()
       .setEmoji('<:flag_FR:1426254585248616569>')
-      .setLabel('French')
+      .setLabel('Français')
       .setValue('fr')
 
     const menu = new StringSelectMenuBuilder()
