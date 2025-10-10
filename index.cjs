@@ -133,4 +133,32 @@ client.on(Events.InteractionCreate, async interaction => {
   }
 })
 
+client.on(Events.InteractionCreate, async interaction => {
+  if (!interaction.isStringSelectMenu()) return;
+
+  if (interaction.customId === 'tickets_lang-menu') {
+    await interaction.deferReply({ ephemeral: true })
+
+    const selected = interaction.values[0]
+
+    let textStr=""
+
+    if (selected === 'en') {
+      textStr = "text en"
+    } else {
+      textStr = "text fr"
+    }
+
+    const text = new TextDisplayBuilder().setContent(textStr)
+
+    const container = new ContainerBuilder()
+      .addTextDisplayComponents(text)
+
+    await interaction.editReply({
+      flags: MessageFlags.IsComponentsV2,
+      components: [container]
+    })
+  }
+})
+
 client.login(token)
