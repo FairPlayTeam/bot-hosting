@@ -2,15 +2,17 @@
   "name": "fpbot",
   "version": "1.0.0",
   "description": "discord bot",
-  "main": "index.js",
+  "main": "index.cjs",
   "scripts": {
-    "start": "bun index.js",
-    "dev": "bun --watch index.js"
+    "start": "node index.cjs",
+    "depsinstall": "npm install && npm install dotenv discord.js@latest fs marked",
+    "dev": "vi index.cjs"
   },
   "author": "YourName",
   "license": "MIT",
   "dependencies": {
     "discord.js": "^14.23.2",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "marked": "^16.4.0"
   }
 }
