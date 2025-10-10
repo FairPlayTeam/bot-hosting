@@ -96,7 +96,41 @@ client.on(Events.InteractionCreate, async interaction => {
       "### Want to contact the staff? You're in the right place!\nYou've **four** available ticket types.\nChoose one to create a ticket <:pepewow:1400572079585362054>!"
     )
 
-    const container = new ContainerBuilder().addTextDisplayComponents(text)
+    const option1 = new StringSelectMenuOptionBuilder()
+      .setEmoji('<:FancyPepe:1412127458894942329>')
+      .setLabel('Type 1')
+      .setValue('type1')
+
+    const option2 = new StringSelectMenuOptionBuilder()
+      .setEmoji('<:FancyPepe:1412127458894942329>')
+      .setLabel('Type 2')
+      .setValue('type2')
+
+    const option3 = new StringSelectMenuOptionBuilder()
+      .setEmoji('<:FancyPepe:1412127458894942329>')
+      .setLabel('Type 3')
+      .setValue('type3')
+
+    const option4 = new StringSelectMenuOptionBuilder()
+      .setEmoji('<:FancyPepe:1412127458894942329>')
+      .setLabel('Type 4')
+      .setValue('type4')
+
+    const menu = new StringSelectMenuBuilder()
+      .setCutomId("tickets_types-menu")
+      .addOptions(
+        option1,
+        option2,
+        option3,
+        option4
+      )
+
+    const container = new ContainerBuilder()
+      .addTextDisplayComponents(text)
+      .addActionRowComponents(
+        new ActionRowBuilder()
+          .addComponents(menu)
+      )
 
     await interaction.editReply({
       flags: MessageFlags.IsComponentsV2,
