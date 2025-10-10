@@ -111,12 +111,11 @@ client.on(Events.InteractionCreate, async interaction => {
         optionFrench
       )
 
+    const actionRowMenu = new ActionRowBuilder().addComponents(menu)
+
     const container = new ContainerBuilder()
       .addTextDisplayComponents(text)
-      .addActionRowComponents(
-        new ActionRowBuilder()
-          .addComponents(menu)
-      )
+      .addActionRowComponents(actionRowMenu)
 
     await interaction.editReply({
       flags: MessageFlags.IsComponentsV2,
