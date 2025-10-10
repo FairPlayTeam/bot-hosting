@@ -93,36 +93,25 @@ client.on(Events.InteractionCreate, async interaction => {
     await interaction.deferReply({ ephemeral: true })
 
     const text = new TextDisplayBuilder().setContent(
-      "### Want to contact the staff? You're in the right place!\nYou've **four** available ticket types.\nChoose one to create a ticket <:pepewow:1400572079585362054>!"
+      "### <:flag_EN:1426254582937288846> Need to contact the staff? You're in the right place!\nYou've **two** available ticket types but select a language before (looks English for you)! <:pepewow:1400572079585362054>\n" +
+      "### <:flag_FR:1426254585248616569> Besoin de contacter l'équipe ? Vous êtes au bon endroit !\n Vous avez le choix entre **deux** types de ticket mais séléctionnez une langue avant cela (cela semble être le français pour vous) ! <:PepeHappy:1400572075911020695>"
     )
 
-    const option1 = new StringSelectMenuOptionBuilder()
-      .setEmoji('<:FancyPepe:1412127458894942329>')
-      .setLabel('Type 1')
-      .setValue('type1')
+    const optionEnglish = new StringSelectMenuOptionBuilder()
+      .setEmoji('<:flag_EN:1426254582937288846>')
+      .setLabel('English')
+      .setValue('en')
 
-    const option2 = new StringSelectMenuOptionBuilder()
-      .setEmoji('<:FancyPepe:1412127458894942329>')
-      .setLabel('Type 2')
-      .setValue('type2')
-
-    const option3 = new StringSelectMenuOptionBuilder()
-      .setEmoji('<:FancyPepe:1412127458894942329>')
-      .setLabel('Type 3')
-      .setValue('type3')
-
-    const option4 = new StringSelectMenuOptionBuilder()
-      .setEmoji('<:FancyPepe:1412127458894942329>')
-      .setLabel('Type 4')
-      .setValue('type4')
+    const optionFrench = new StringSelectMenuOptionBuilder()
+      .setEmoji('<:flag_FR:1426254585248616569>')
+      .setLabel('French')
+      .setValue('fr')
 
     const menu = new StringSelectMenuBuilder()
-      .setCutomId("tickets_types-menu")
+      .setCutomId("tickets_lang-menu")
       .addOptions(
-        option1,
-        option2,
-        option3,
-        option4
+        optionEnglish,
+        optionFrench
       )
 
     const container = new ContainerBuilder()
