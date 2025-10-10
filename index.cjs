@@ -13,6 +13,9 @@ const {
   TextDisplayBuilder,
   ContainerBuilder,
   Events,
+  StringSelectMenuBuilder,
+  StringSelectMenuOptionBuilder,
+  ActionRowBuilder,
 } = require('discord.js')
 
 const fs=require('fs')
@@ -107,7 +110,7 @@ client.on(Events.InteractionCreate, async interaction => {
       .setValue('fr')
 
     const menu = new StringSelectMenuBuilder()
-      .setCutomId("tickets_lang-menu")
+      .setCustomId("tickets_lang-menu")
       .addOptions(
         optionEnglish,
         optionFrench
