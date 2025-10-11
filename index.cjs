@@ -147,9 +147,11 @@ client.on(Events.InteractionCreate, async interaction => {
     if (selected === 'en') {
       textStr = "### Choose a ticket type\nIf you want to do a partnership, please contact a staff member directly in DM."
       menuTab = ["Help", "Candidate"]
+      menuTab["placeholder"] = "Select a ticket type"
     } else {
       textStr = "### Choisissez un type de ticket\nSi vous souhaitez faire un partenariat, veuillez contacter un membre du personnel directement en MP."
       menuTab = ["Aide", "Postuler"]
+      menuTab["placeholder"] = "Sélectionnez un type de ticket"
     }
 
     const text = new TextDisplayBuilder().setContent(textStr)
@@ -166,6 +168,7 @@ client.on(Events.InteractionCreate, async interaction => {
 
     const menu = new StringSelectMenuBuilder()
       .setCustomId("tickets_type-menu")
+      .setPlaceholder(menuTab["placeholder"])
       .addOptions(
         helpOption,
         candidateOption
