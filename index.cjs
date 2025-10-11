@@ -142,17 +142,40 @@ client.on(Events.InteractionCreate, async interaction => {
     const selected = interaction.values[0]
 
     let textStr=""
+    let menuTab=[]
 
     if (selected === 'en') {
       textStr = "### Choose a ticket type\nIf you want to do a partnership, please contact a staff member directly in DM."
+      menuTab = ["Help", "Candidate"]
     } else {
-      textStr = "### Choisissez un type de ticket\nSi vous souhaitez faire un partenariat, veuillez contacter un membre du personnel directement en MM."
+      textStr = "### Choisissez un type de ticket\nSi vous souhaitez faire un partenariat, veuillez contacter un membre du personnel directement en MP."
+      menuTab = ["Aide", "Postuler"]
     }
 
     const text = new TextDisplayBuilder().setContent(textStr)
 
+    const helpOption = new StringSelectMenuOptionBuilder()
+      .setLabel(menuTab[0])
+      .setValue('help')
+      .setEmoji('❓')
+
+    const candidateOption = new StringSelectMenuOptionBuilder()
+      .setLabel(menuTab[1])
+      .setValue('candidate')
+      .setEmoji('📝')
+
+    const menu = new StringSelectMenuBuilder()
+      .setCustomId("tickets_type-menu")
+      .addOptions(
+        helpOption,
+        candidateOption
+      )
+    
+    const actionRowMenu = new ActionRowBuilder().addComponents(menu)
+
     const container = new ContainerBuilder()
       .addTextDisplayComponents(text)
+      .addActionRowComponents(actionRowMenu)
 
     await interaction.editReply({
       flags: MessageFlags.IsComponentsV2,
