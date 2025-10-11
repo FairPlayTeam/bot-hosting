@@ -144,9 +144,9 @@ client.on(Events.InteractionCreate, async interaction => {
     let textStr=""
 
     if (selected === 'en') {
-      textStr = "text en"
+      textStr = "### Choose a ticket type\nIf you want to do a partnership, please contact a staff member directly in DM."
     } else {
-      textStr = "text fr"
+      textStr = "### Choisissez un type de ticket\nSi vous souhaitez faire un partenariat, veuillez contacter un membre du personnel directement en MM."
     }
 
     const text = new TextDisplayBuilder().setContent(textStr)
