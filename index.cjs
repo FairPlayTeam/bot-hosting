@@ -165,7 +165,7 @@ client.on(Events.InteractionCreate, async interaction => {
       .setLabel(menuTab[1])
       .setValue('candidate')
       .setEmoji('📝')
-
+    
     const menu = new StringSelectMenuBuilder()
       .setCustomId("tickets_type-menu")
       .setPlaceholder(menuTab["placeholder"])
@@ -183,6 +183,34 @@ client.on(Events.InteractionCreate, async interaction => {
     await interaction.editReply({
       flags: MessageFlags.IsComponentsV2,
       components: [container]
+    })
+  }
+})
+
+client.on(Events.InteractionCreate, async interaction => {
+  if (!interaction.isStringSelectMenu()) return;
+
+  if (interaction.customId === 'tickets_type-menu') {
+    await interaction.deferUpdate() // we will never update the message just create a new channel
+
+    const selected = interaction.values[0]
+
+    const channel=await interaction.guild.channels.create({
+      name: `${selected === "help" ? "❓" : "📝"}${interaction.user.username}`,
+      permissionOverwrites: [
+        {
+          id: interaction.guild.id,
+          deny: [ PermissionFlagsBits.ViewChannel ]
+        },
+        {
+          id: interaction.user.id,
+          allow: [ PermissionFlagsBits.ViewChannel ]
+        }
+      ]
+    })
+
+    await channel.send({
+      content: `<@${interaction.user.id}>`
     })
   }
 })
