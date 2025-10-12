@@ -16,6 +16,7 @@ const {
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
   ActionRowBuilder,
+  ButtonBuilder,
 } = require('discord.js')
 
 const fs=require('fs')
@@ -99,24 +100,19 @@ client.on(Events.InteractionCreate, async interaction => {
       "### <:flag_FR:1426254585248616569> Besoin de contacter l'équipe ? Vous êtes au bon endroit !\n Vous avez le choix entre **deux** types de ticket mais séléctionnez une langue avant cela (cela semble être le français pour vous) ! <:PepeHappy:1400572075911020695>"
     )
 
-    const optionEnglish = new StringSelectMenuOptionBuilder()
-      .setEmoji('<:flag_EN:1426254582937288846>')
+    const buttonEnglish = new ButtonBuilder()
+      .setCustomId('tickets_lang-en')
       .setLabel('English')
-      .setValue('en')
-
-    const optionFrench = new StringSelectMenuOptionBuilder()
-      .setEmoji('<:flag_FR:1426254585248616569>')
+      .setStyle(1)
+      .setEmoji('1426254582937288846')
+    
+    const buttonFrench = new ButtonBuilder()
+      .setCustomId('tickets_lang-fr')
       .setLabel('Français')
-      .setValue('fr')
+      .setStyle(1)
+      .setEmoji('1426254585248616569')
 
-    const menu = new StringSelectMenuBuilder()
-      .setCustomId("tickets_lang-menu")
-      .addOptions(
-        optionEnglish,
-        optionFrench
-      )
-
-    const actionRowMenu = new ActionRowBuilder().addComponents(menu)
+    const actionRowMenu = new ActionRowBuilder().addComponents(buttonEnglish, buttonFrench)
 
     const container = new ContainerBuilder()
       .addTextDisplayComponents(text)
@@ -134,17 +130,15 @@ client.on(Events.InteractionCreate, async interaction => {
 })
 
 client.on(Events.InteractionCreate, async interaction => {
-  if (!interaction.isStringSelectMenu()) return;
+  if (!interaction.isButton()) return;
 
-  if (interaction.customId === 'tickets_lang-menu') {
+  if (interaction.customId.substr(0,12) === 'tickets_lang') {
     await interaction.deferReply({ ephemeral: true })
-
-    const selected = interaction.values[0]
 
     let textStr=""
     let menuTab=[]
 
-    if (selected === 'en') {
+    if (interaction.customId === 'tickets_lang-en') {
       textStr = "### Choose a ticket type\nIf you want to do a partnership, please contact a staff member directly in DM."
       menuTab = ["Help", "Candidate"]
       menuTab["placeholder"] = "Select a ticket type"
