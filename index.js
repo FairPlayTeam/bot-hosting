@@ -6,7 +6,6 @@ import {
   Client,
   GatewayIntentBits,
   SlashCommandBuilder,
-  REST,
   Routes,
   PermissionFlagsBits,
   ActivityType,
@@ -19,9 +18,12 @@ import {
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
-  StringSelectMenuOptionBuilder,
+  ButtonStyle,
   StringSelectMenuBuilder,
+  StringSelectMenuOptionBuilder,
 } from 'discord.js'
+
+import { REST } from '@discordjs/rest'
 
 import fs from 'fs'
 
@@ -31,7 +33,6 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildEmojisAndStickers, // 'GuildEmojisAndStickers' is deprecated
     GatewayIntentBits.GuildMessageReactions,
   ],
   presence: {
@@ -40,48 +41,35 @@ const client = new Client({
       {
         name: 'Watch tickets askings',
         type: ActivityType.Watching,
-      },
-    ],
-  },
+      }
+    ]
+  }
 })
 
-if (!fs.existsSync('tickets.json')) {
-  fs.writeFileSync('tickets.json', JSON.stringify({}))
+if (!fs.existsSync('data.json')) {
+  fs.writeFileSync('data.json', JSON.stringify({}))
 }
-const dataTickets = fs.readFileSync('tickets.json', 'utf8')
-let tickets = JSON.parse(dataTickets)
-
-if (!fs.existsSync('categories.json')) {
-  fs.writeFileSync('categories.json', JSON.stringify({}))
-}
-const dataCategories = fs.readFileSync('categories.json', 'utf8')
-let categories = JSON.parse(dataCategories)
-
-if (!fs.existsSync('roles.json')) {
-  fs.writeFileSync('roles.json', JSON.stringify({}))
-}
-const dataRoles = fs.readFileSync('roles.json', 'utf8')
-let roles = JSON.parse(dataRoles)
-
-if (!fs.existsSync('queue.json')) {
-  fs.writeFileSync('queue.json', JSON.stringify({}))
-}
-const dataQueue = fs.readFileSync('queue.json', 'utf8')
-let queue = JSON.parse(dataQueue)
+let data = JSON.parse(fs.readFileSync('data.json', 'utf8'))
 
 const commands = [
   new SlashCommandBuilder()
     .setName('tickets_show-container')
     .setDescription("Affiche l'embed dans le salon où la commande est exécutée")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+  new SlashCommandBuilder()
+    .setName('tickets_config')
+    .setDescription("Configure la fonction ticket")
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 ].map(command => command.toJSON())
 
-const rest = new REST({ version: '10' }).setToken(token)
+const rest = new REST({
+  version: '10'
+}).setToken(token)
 
 ;(async appId => {
   try {
     await rest.put(Routes.applicationCommands(appId), { body: commands })
-    console.log('Commandes enregistrées avec succès !')
+    console.log('Putting commands has been done!')
   } catch (error) {
     console.error(error)
   }
@@ -128,6 +116,36 @@ client.on(Events.InteractionCreate, async interaction => {
     await interaction.editReply({
       content: 'The container has been sent!'
     })
+  } else if (interaction.commandName === 'tickets_config') {
+    await interaction.deferReply()
+    if(!data[interaction.guild.id]) {
+      const text = new TextDisplayBuilder().setContent("### Choose your language")
+      const buttonEnglish = new ButtonBuilder()
+      .setCustomId('tickets_config-step1$en')
+      .setLabel('English')
+      .setStyle(1)
+      .setEmoji('1426254582937288846')
+    
+    const buttonFrench = new ButtonBuilder()
+      .setCustomId('tickets_config-step1$fr')
+      .setLabel('Français')
+      .setStyle(1)
+      .setEmoji('1426254585248616569')
+
+    const actionRowLanguages = new ActionRowBuilder().addComponents(
+      buttonEnglish,
+      buttonFrench
+    )
+
+    const container = new ContainerBuilder()
+      .addTextDisplayComponents(text)
+      .addActionRowComponents(actionRowLanguages)
+
+      await interaction.editReply({
+        flags: MessageFlags.IsComponentsV2,
+        components: [container]
+      })
+    }
   }
 })
 
@@ -177,13 +195,7 @@ client.on(Events.InteractionCreate, async interaction => {
       flags: MessageFlags.IsComponentsV2,
       components: [container]
     })
-  }
-})
-
-client.on(Events.InteractionCreate, async interaction => {
-  if (!interaction.isButton()) return;
-
-  if (interaction.customId.substr(0, 12) === 'tickets_type') {
+  } else if (interaction.customId.substr(0, 12) === 'tickets_type') {
     if (interaction.customId.substr(0, 17) === 'tickets_type-help') {
       await interaction.deferReply({ ephemeral: true })
       const channel = await interaction.guild.channels.create({
@@ -237,7 +249,7 @@ client.on(Events.InteractionCreate, async interaction => {
         .setPlaceholder(interaction.customId.substr(23) === 'en' ? "I want to be developer in FairPlay because I want to create a bot to become the server active" : "Je veux être développeur chez FairPlay car je souhaite créer un bot pour rendre le serveur actif")
         .setRequired(true)
         .setMinLength(1)
-        .setMaxLength(4000)
+        .setMaxLength(1500)
       
       const qualitiesInput = new TextInputBuilder()
         .setCustomId("qualities")
@@ -246,7 +258,7 @@ client.on(Events.InteractionCreate, async interaction => {
         .setPlaceholder(interaction.customId.substr(23) === 'en' ? "I am a team player, then I have good communication skills..." : "Je suis un joueur d'équipe, donc j'ai de bonnes compétences en communication...")
         .setRequired(true)
         .setMinLength(1)
-        .setMaxLength(4000)
+        .setMaxLength(1500)
 
       const remuneratedInput = new TextInputBuilder()
         .setCustomId("remunerated")
@@ -272,20 +284,253 @@ client.on(Events.InteractionCreate, async interaction => {
       await interaction.showModal(modal)
       return
     }
+  } else if (interaction.customId.substr(0,20) === 'tickets_config-step1') {
+    await interaction.deferUpdate()
+
+    const lang = interaction.customId.split('$')[1]
+
+    const text = new TextDisplayBuilder().setContent(lang === 'en' ? "### In witch category would you like that the ticket will be created?" : "### Dans quelle catégorie souhaitez-vous que les tickets soit créés ?")
+    
+    const buttonCreateCategory = new ButtonBuilder()
+      .setCustomId(`tickets_config-step2$${lang}$create-category`)
+      .setLabel(lang === 'en' ? 'Create a category' : 'Créer une catégorie')
+      .setStyle(1)
+    
+    const buttonUseACategory = new ButtonBuilder()
+      .setCustomId(`tickets_config-step2$${lang}$use-a-category`)
+      .setLabel(lang === 'en' ? 'Use an existing category' : 'Utiliser une catégorie existante')
+      .setStyle(1)
+
+    const buttonDontUseACategory = new ButtonBuilder()
+      .setCustomId(`tickets_config-3$${lang}$dont-use-a-category$`)
+      .setLabel(lang === 'en' ? 'Don\'t use a category' : 'Ne pas utiliser de catégorie')
+      .setStyle(2)
+
+    const actionRowButtons = new ActionRowBuilder().addComponents(
+      buttonCreateCategory,
+      buttonUseACategory,
+      buttonDontUseACategory
+    )
+
+    const container = new ContainerBuilder()
+      .addTextDisplayComponents(text)
+      .addActionRowComponents(actionRowButtons)
+
+    await interaction.editReply({
+      flags: MessageFlags.IsComponentsV2,
+      components: [container]
+    })
+  } else if (interaction.customId.substr(0,20) === 'tickets_config-step2') {
+    const lang = interaction.customId.split('$')[1]
+    const categoryChoice = interaction.customId.split('$')[2]
+
+    if (categoryChoice === 'create-category') {
+      const modal = new ModalBuilder()
+        .setCustomId(`tickets_modal-create-category$${lang}$${categoryChoice}`)
+        .setTitle(lang === 'en' ? "Create a category" : "Créer une catégorie")
+
+      const categoryNameInput = new TextInputBuilder()
+        .setCustomId("category-name")
+        .setStyle(TextInputStyle.Short)
+        .setLabel(lang === 'en' ? "Category Name" : "Nom de la catégorie")
+        .setPlaceholder(lang === 'en' ? "Enter category name" : "Entrez le nom de la catégorie")
+        .setRequired(true)
+
+      const inAnActionRow = component => {
+        return new ActionRowBuilder().addComponents(component)
+      }
+
+      modal.addComponents(
+        inAnActionRow(categoryNameInput)
+      )
+      await interaction.showModal(modal)
+      return;
+    } else {
+      await interaction.deferUpdate()
+
+      const text = new TextDisplayBuilder().setContent(lang === 'en' ? "### Please select a category" : "### Séléctionnez une catégorie")
+
+      const categories = interaction.guild.channels.cache.filter(c => c.type === 4)
+
+      const categoryMenu = new StringSelectMenuBuilder()
+        .setCustomId(`tickets_config-step3$${lang}$${categoryChoice}`)
+        .setPlaceholder(lang === 'en' ? "No category selected" : "Aucune catégorie séléctionnée")
+        .setMinValues(1)
+        .setMaxValues(1)
+
+      categories.forEach(category => {
+        categoryMenu.addOptions({
+          label: category.name,
+          value: category.id,
+          emoji: '<a:iconTextChannel:843595665996906496>'
+        })
+      })
+
+      const actionRowMenu = new ActionRowBuilder().addComponents(categoryMenu)
+
+      const container = new ContainerBuilder()
+        .addTextDisplayComponents(text)
+        .addActionRowComponents(actionRowMenu)
+
+      await interaction.editReply({
+        flags: MessageFlags.IsComponentsV2,
+        components: [container]
+      })
+    }
   }
 })
 
 client.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isModalSubmit()) return;
-
-  if (interaction.customId.substr(0, 39) === 'tickets_modal-get-user-informations') {
+  if (interaction.customId.substr(0, 45) === 'tickets_modal-get-user-informations-candidate') {
     const age = interaction.fields.getTextInputValue('age')
     const position = interaction.fields.getTextInputValue('position')
     const detail = interaction.fields.getTextInputValue('detail')
     const qualities = interaction.fields.getTextInputValue('qualities')
     const remunerated = interaction.fields.getTextInputValue('remunerated')
+    const lang = interaction.customId.substr(56)
 
+    await interaction.deferReply({ ephemeral: true })
 
+    const channel = await interaction.guild.channels.create({
+      name: `📝${interaction.user.username}`,
+      permissionOverwrites: [
+        {
+          id: interaction.guild.id,
+          deny: [ PermissionFlagsBits.ViewChannel ]
+        },
+        {
+          id: interaction.user.id,
+          allow: [ PermissionFlagsBits.ViewChannel ]
+        }
+      ]
+    })
+
+    const text = new TextDisplayBuilder().setContent(lang === 'en' ? 
+      `### Welcome to your new ticket <@${interaction.user.id}>! <:Pepega:1400572073881112666>\nTicket type: \`candidate\`\nTicket language: \`English\`\nAge: \`${age}\`\nPosition: \`${position}\`\nDetails: \`\`\`${detail}\`\`\`\nQualities/defects: \`\`\`${qualities}\`\`\`\nWants to be remunerated: \`${remunerated}\``
+      :
+      `### Bienvenue dans votre nouveau ticket <@${interaction.user.id}>! <:Pepega:1400572073881112666>\nType de ticket : \`postuler\`\nLangue du ticket : \`Français\`\nÂge : \`${age}\`\nPoste désiré : \`${position}\`\nDétails : \`\`\`${detail}\`\`\`\nQualités/défauts : \`\`\`${qualities}\`\`\`\nVeut être rémunéré ? : \`${remunerated}\``
+    )
+
+    const buttonClose = new ButtonBuilder()
+      .setCustomId('ticket_close')
+      .setLabel(lang === 'en' ? 'Close' : 'Fermer')
+      .setStyle(ButtonStyle.Danger)
+      .setEmoji('🔒')
+
+    const buttonProcess = new ButtonBuilder()
+      .setCustomId('ticket_process')
+      .setLabel(lang === 'en' ? 'Process' : 'Traiter')
+      .setStyle(ButtonStyle.Success)
+      .setEmoji('🙋‍♂️')
+
+    const actionRowButtons = new ActionRowBuilder().addComponents(
+      buttonClose,
+      buttonProcess
+    )
+    
+    const container = new ContainerBuilder()
+      .addTextDisplayComponents(text)
+      .addActionRowComponents(actionRowButtons)
+
+    await channel.send({
+      flags: MessageFlags.IsComponentsV2,
+      components: [container]
+    })
+
+    await interaction.editReply({
+      content: `👀 <#${channel.id}>`
+    })
+  } else if (interaction.customId.substr(0, 29) === 'tickets_modal-create-category') {
+    await interaction.deferUpdate()
+
+    const lang = interaction.customId.split('$')[1]
+    const categoryChoice = interaction.customId.split('$')[2]
+    const categoryName = interaction.fields.getTextInputValue('category-name')
+
+    let category;
+
+    try {
+      category = await interaction.guild.channels.create({
+        name: categoryName,
+        type: 4
+      })
+    } catch (error) {
+      console.error(error)
+      await interaction.editReply({
+        content: lang === 'en' ? 'An error occurred while creating the category. Please try again later or contact the developer' : 'Une erreur est survenue lors de la création de la catégorie. Veuillez réessayer plus tard ou contacter le développeur.',
+        ephemeral: true
+      })
+      return;
+    }
+
+    const text = new TextDisplayBuilder().setContent(lang === 'en' ? "### Please select a staff role (to ping)" : "### Séléctionnez un rôle staff (à ping)")
+
+    const roles = interaction.guild.roles.cache.filter(r => r.id !== interaction.guild.id)
+    
+    const roleMenu = new StringSelectMenuBuilder()
+      .setCustomId(`tickets_config-step4$${lang}$${categoryChoice}$${category.id}`)
+      .setPlaceholder(lang === 'en' ? "No role selected" : "Aucun rôle séléctionné")
+      .setMinValues(1)
+      .setMaxValues(1)
+
+    roles.forEach(role => {
+      roleMenu.addOptions({
+        label: role.name,
+        value: role.id,
+        emoji: '<a:iconMention:843530621951541249>'
+      })
+    })
+
+    const actionRowMenu = new ActionRowBuilder().addComponents(roleMenu)
+    
+    const container = new ContainerBuilder()
+      .addTextDisplayComponents(text)
+      .addActionRowComponents(actionRowMenu)
+    
+    await interaction.editReply({
+      flags: MessageFlags.IsComponentsV2,
+      components: [container]
+    })
+  }
+})
+
+client.on(Events.InteractionCreate, async interaction => {
+  if (!interaction.isStringSelectMenu()) return;
+  if (interaction.customId.substr(0,20) === 'tickets_config-step3') {
+    await interaction.deferUpdate()
+    const lang = interaction.customId.split('$')[1]
+    const categoryChoice = interaction.customId.split('$')[2]
+    const categoryId = interaction.values[0]
+
+    const text = new TextDisplayBuilder().setContent(lang === 'en' ? "### Please select a staff role (to ping)" : "### Séléctionnez un rôle staff (à ping)")
+
+    const roles = interaction.guild.roles.cache.filter(r => r.id !== interaction.guild.id)
+    
+    const roleMenu = new StringSelectMenuBuilder()
+      .setCustomId(`tickets_config-step4$${lang}$${categoryChoice}$${categoryId}`)
+      .setPlaceholder(lang === 'en' ? "No role selected" : "Aucun rôle séléctionné")
+      .setMinValues(1)
+      .setMaxValues(1)
+
+    roles.forEach(role => {
+      roleMenu.addOptions({
+        label: role.name,
+        value: role.id,
+        emoji: '<a:iconMention:843530621951541249>'
+      })
+    })
+
+    const actionRowMenu = new ActionRowBuilder().addComponents(roleMenu)
+    
+    const container = new ContainerBuilder()
+      .addTextDisplayComponents(text)
+      .addActionRowComponents(actionRowMenu)
+    
+    await interaction.editReply({
+      flags: MessageFlags.IsComponentsV2,
+      components: [container]
+    })
   }
 })
 
