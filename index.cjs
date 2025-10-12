@@ -150,25 +150,22 @@ client.on(Events.InteractionCreate, async interaction => {
 
     const text = new TextDisplayBuilder().setContent(textStr)
 
-    const helpOption = new StringSelectMenuOptionBuilder()
+    const helpButton = new ButtonBuilder()
+      .setCustomId('tickets_type-help')
       .setLabel(menuTab[0])
-      .setValue('help')
+      .setStyle(1)
       .setEmoji('❓')
 
-    const candidateOption = new StringSelectMenuOptionBuilder()
+    const candidateButton = new ButtonBuilder()
+      .setCustomId('tickets_type-candidate')
       .setLabel(menuTab[1])
-      .setValue('candidate')
+      .setStyle(1)
       .setEmoji('📝')
-    
-    const menu = new StringSelectMenuBuilder()
-      .setCustomId("tickets_type-menu")
-      .setPlaceholder(menuTab["placeholder"])
-      .addOptions(
-        helpOption,
-        candidateOption
-      )
-    
-    const actionRowMenu = new ActionRowBuilder().addComponents(menu)
+
+    const actionRowMenu = new ActionRowBuilder().addComponents(
+      helpButton,
+      candidateButton
+    )
 
     const container = new ContainerBuilder()
       .addTextDisplayComponents(text)
@@ -182,15 +179,13 @@ client.on(Events.InteractionCreate, async interaction => {
 })
 
 client.on(Events.InteractionCreate, async interaction => {
-  if (!interaction.isStringSelectMenu()) return;
+  if (!interaction.isButton()) return;
 
-  if (interaction.customId === 'tickets_type-menu') {
+  if (interaction.customId.substr(0, 12) === 'tickets_type') {
     await interaction.deferUpdate() // we will never update the message just create a new channel
-
-    const selected = interaction.values[0]
-
+    
     const channel=await interaction.guild.channels.create({
-      name: `${selected === "help" ? "❓" : "📝"}${interaction.user.username}`,
+      name: `${interaction.customId === "tickets_type-help" ? "❓" : "📝"}${interaction.user.username}`,
       permissionOverwrites: [
         {
           id: interaction.guild.id,
