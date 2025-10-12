@@ -1,7 +1,8 @@
-require('dotenv').config()
+import dotenv from 'dotenv'
+dotenv.config()
 const token = process.env.TOKEN
 
-const {
+import {
   Client,
   GatewayIntentBits,
   SlashCommandBuilder,
@@ -13,13 +14,16 @@ const {
   TextDisplayBuilder,
   ContainerBuilder,
   Events,
-  StringSelectMenuBuilder,
-  StringSelectMenuOptionBuilder,
   ActionRowBuilder,
   ButtonBuilder,
-} = require('discord.js')
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+  StringSelectMenuOptionBuilder,
+  StringSelectMenuBuilder,
+} from 'discord.js'
 
-const fs=require('fs')
+import fs from 'fs'
 
 const client = new Client({
   intents: [
@@ -41,8 +45,6 @@ const client = new Client({
   },
 })
 
-// tickets categ roles and queues are unused but ill leave it here also i suggest using a db instead of json :p
-// if the jsons were missing they throwd an error but use a db please
 if (!fs.existsSync('tickets.json')) {
   fs.writeFileSync('tickets.json', JSON.stringify({}))
 }
@@ -157,7 +159,7 @@ client.on(Events.InteractionCreate, async interaction => {
       .setEmoji('❓')
 
     const candidateButton = new ButtonBuilder()
-      .setCustomId('tickets_type-candidate')
+      .setCustomId(`tickets_type-candidate-${interaction.customId.substr(13)}`)
       .setLabel(menuTab[1])
       .setStyle(1)
       .setEmoji('📝')
@@ -182,25 +184,108 @@ client.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isButton()) return;
 
   if (interaction.customId.substr(0, 12) === 'tickets_type') {
-    await interaction.deferUpdate() // we will never update the message just create a new channel
-    
-    const channel=await interaction.guild.channels.create({
-      name: `${interaction.customId === "tickets_type-help" ? "❓" : "📝"}${interaction.user.username}`,
-      permissionOverwrites: [
-        {
-          id: interaction.guild.id,
-          deny: [ PermissionFlagsBits.ViewChannel ]
-        },
-        {
-          id: interaction.user.id,
-          allow: [ PermissionFlagsBits.ViewChannel ]
-        }
-      ]
-    })
+    if (interaction.customId.substr(0, 17) === 'tickets_type-help') {
+      await interaction.deferReply({ ephemeral: true })
+      const channel = await interaction.guild.channels.create({
+        name: `❓${interaction.user.username}`,
+        permissionOverwrites: [
+          {
+            id: interaction.guild.id,
+            deny: [ PermissionFlagsBits.ViewChannel ]
+          },
+          {
+            id: interaction.user.id,
+            allow: [ PermissionFlagsBits.ViewChannel ]
+          }
+        ]
+      })
 
-    await channel.send({
-      content: `<@${interaction.user.id}>`
-    })
+      await channel.send({
+        content: `<@${interaction.user.id}>`
+      })
+
+      await interaction.editReply({
+        content: `👀 <#${channel.id}>`
+      })
+    } else {
+      const modal = new ModalBuilder()
+        .setCustomId(`tickets_modal-get-user-informations-candidate-${interaction.customId.substr(13)}`)
+        .setTitle(interaction.customId.substr(23) === 'en' ? "Become staff of FairPlay" : "Faire partie de l'équipe de FairPlay")
+
+      const ageInput = new TextInputBuilder()
+        .setCustomId("age")
+        .setStyle(TextInputStyle.Short)
+        .setLabel(interaction.customId.substr(23) === 'en' ? "How old are you?" : "Quel âge avez-vous ?")
+        .setPlaceholder(interaction.customId.substr(23) === 'en' ? "16 years old" : "16 ans")
+        .setRequired(true)
+        .setMinLength(2)
+        .setMaxLength(12)
+      
+      const positionInput = new TextInputBuilder()
+        .setCustomId("position")
+        .setStyle(TextInputStyle.Short)
+        .setLabel(interaction.customId.substr(23) === 'en' ? "What position are you applying for?" : "Quel poste voulez-vous occuper ?")
+        .setPlaceholder(interaction.customId.substr(23) === 'en' ? "Developer" : "Développeur")
+        .setRequired(true)
+        .setMinLength(5)
+        .setMaxLength(25)
+      
+      const detailInput = new TextInputBuilder()
+        .setCustomId("detail")
+        .setStyle(TextInputStyle.Paragraph)
+        .setLabel(interaction.customId.substr(23) === 'en' ? "Why do you want to do this in detail?" : "Que voulez vous faire ?")
+        .setPlaceholder(interaction.customId.substr(23) === 'en' ? "I want to be developer in FairPlay because I want to create a bot to become the server active" : "Je veux être développeur chez FairPlay car je souhaite créer un bot pour rendre le serveur actif")
+        .setRequired(true)
+        .setMinLength(1)
+        .setMaxLength(4000)
+      
+      const qualitiesInput = new TextInputBuilder()
+        .setCustomId("qualities")
+        .setStyle(TextInputStyle.Paragraph)
+        .setLabel(interaction.customId.substr(23) === 'en' ? "What are your qualities and your defects?" : "Quelles sont vos qualités et vos défauts ?")
+        .setPlaceholder(interaction.customId.substr(23) === 'en' ? "I am a team player, then I have good communication skills..." : "Je suis un joueur d'équipe, donc j'ai de bonnes compétences en communication...")
+        .setRequired(true)
+        .setMinLength(1)
+        .setMaxLength(4000)
+
+      const remuneratedInput = new TextInputBuilder()
+        .setCustomId("remunerated")
+        .setStyle(TextInputStyle.Short)
+        .setLabel(interaction.customId.substr(23) === 'en' ? "I want to be remunerated" : "Je veux être rémunéré")
+        .setPlaceholder(interaction.customId.substr(23) === 'en' ? "Yes" : "Oui")
+        .setRequired(true)
+        .setMinLength(2)
+        .setMaxLength(3)
+
+      const inAnActionRow = component => {
+        return new ActionRowBuilder().addComponents(component)
+      }
+
+      modal.addComponents(
+        inAnActionRow(ageInput),
+        inAnActionRow(positionInput),
+        inAnActionRow(detailInput),
+        inAnActionRow(qualitiesInput),
+        inAnActionRow(remuneratedInput)
+      )
+
+      await interaction.showModal(modal)
+      return
+    }
+  }
+})
+
+client.on(Events.InteractionCreate, async interaction => {
+  if (!interaction.isModalSubmit()) return;
+
+  if (interaction.customId.substr(0, 39) === 'tickets_modal-get-user-informations') {
+    const age = interaction.fields.getTextInputValue('age')
+    const position = interaction.fields.getTextInputValue('position')
+    const detail = interaction.fields.getTextInputValue('detail')
+    const qualities = interaction.fields.getTextInputValue('qualities')
+    const remunerated = interaction.fields.getTextInputValue('remunerated')
+
+
   }
 })
 
