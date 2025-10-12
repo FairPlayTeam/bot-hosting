@@ -4,11 +4,9 @@
   "description": "discord bot",
   "main": "index.cjs",
   "scripts": {
-    "start": "node index.cjs",
-    "depsinstall": "npm install && npm install dotenv discord.js@latest fs marked",
-    "dev": "vi index.cjs"
+    "start": "bun index.cjs"
   },
-  "author": "YourName",
+  "author": "SoNaCl and Poulpe Glacé",
   "license": "MIT",
   "dependencies": {
     "discord.js": "^14.23.2",
