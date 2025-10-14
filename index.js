@@ -20,12 +20,15 @@ import {
   TextInputStyle,
   ButtonStyle,
   StringSelectMenuBuilder,
-  StringSelectMenuOptionBuilder,
+  SectionBuilder,
+  SeparatorBuilder,
+  SeparatorSpacingSize,
 } from 'discord.js'
 
 import { REST } from '@discordjs/rest'
 
 import fs from 'fs'
+import { text } from 'stream/consumers'
 
 const client = new Client({
   intents: [
@@ -85,28 +88,61 @@ client.on(Events.InteractionCreate, async interaction => {
   if (interaction.commandName === 'tickets_show-container') {
     await interaction.deferReply({ ephemeral: true })
 
-    const text = new TextDisplayBuilder().setContent(
-      "### <:flag_EN:1426254582937288846> Need to contact the staff? You're in the right place!\nYou've **two** available ticket types but select a language before (looks English for you)! <:pepewow:1400572079585362054>\n" +
-      "### <:flag_FR:1426254585248616569> Besoin de contacter l'équipe ? Vous êtes au bon endroit !\n Vous avez le choix entre **deux** types de ticket mais séléctionnez une langue avant cela (cela semble être le français pour vous) ! <:PepeHappy:1400572075911020695>"
-    )
+    const textEn1 = new TextDisplayBuilder().setContent("### <:flag_EN:1426254582937288846> Need to contact the staff? You're in the right place!")
+    const textEn2 = new TextDisplayBuilder().setContent("You've **two** available ticket types! <:pepewow:1400572079585362054> Choose one!")
+    const textFr1 = new TextDisplayBuilder().setContent("### <:flag_FR:1426254585248616569> Besoin de contacter l'équipe ? Vous êtes au bon endroit !")
+    const textFr2 = new TextDisplayBuilder().setContent("Vous avez le choix entre **deux** types de ticket ! <:PepeHappy:1400572075911020695> Choisissez-en un !")
 
-    const buttonEnglish = new ButtonBuilder()
-      .setCustomId('tickets_lang-en')
-      .setLabel('English')
+    const helpButtonEn = new ButtonBuilder()
+      .setCustomId(`tickets_type-help-en`)
+      .setLabel("Help")
       .setStyle(1)
-      .setEmoji('1426254582937288846')
+      .setEmoji('❓')
+
+    const candidateButtonEn = new ButtonBuilder()
+      .setCustomId(`tickets_type-candidate-en`)
+      .setLabel("Candidate")
+      .setStyle(1)
+      .setEmoji('📝')
+
+    const helpButtonFr = new ButtonBuilder()
+      .setCustomId(`tickets_type-help-fr`)
+      .setLabel("Aide")
+      .setStyle(1)
+      .setEmoji('❓')
+
+    const candidateButtonFr = new ButtonBuilder()
+      .setCustomId(`tickets_type-candidate-fr`)
+      .setLabel("Postuler")
+      .setStyle(1)
+      .setEmoji('📝')
+
+    const sectionEn1 = new SectionBuilder()
+      .addTextDisplayComponents(textEn1)
+      .setButtonAccessory(helpButtonEn)
+
+    const sectionEn2 = new SectionBuilder()
+      .addTextDisplayComponents(textEn2)
+      .setButtonAccessory(candidateButtonEn)
+
+    const sectionFr1 = new SectionBuilder()
+      .addTextDisplayComponents(textFr1)
+      .setButtonAccessory(helpButtonFr)
+
+    const sectionFr2 = new SectionBuilder()
+      .addTextDisplayComponents(textFr2)
+      .setButtonAccessory(candidateButtonFr)
+
+    const separator = new SeparatorBuilder()
+      .setDivider(true)
+      .setSpacing(SeparatorSpacingSize.Small)
     
-    const buttonFrench = new ButtonBuilder()
-      .setCustomId('tickets_lang-fr')
-      .setLabel('Français')
-      .setStyle(1)
-      .setEmoji('1426254585248616569')
-
-    const actionRowMenu = new ActionRowBuilder().addComponents(buttonEnglish, buttonFrench)
-
     const container = new ContainerBuilder()
-      .addTextDisplayComponents(text)
-      .addActionRowComponents(actionRowMenu)
+      .addSectionComponents(sectionEn1)
+      .addSectionComponents(sectionEn2)
+      .addSeparatorComponents(separator)
+      .addSectionComponents(sectionFr1)
+      .addSectionComponents(sectionFr2)
 
     await interaction.channel.send({
       flags: MessageFlags.IsComponentsV2,
@@ -212,8 +248,38 @@ client.on(Events.InteractionCreate, async interaction => {
         ]
       })
 
+      const lang = interaction.customId.substr(18)
+
+      const text = new TextDisplayBuilder().setContent(lang === 'en' ? 
+        `### Welcome to your new ticket <@${interaction.user.id}>! <:Pepega:1400572073881112666>\nTicket type: \`help\`\n**__Please describe your problem in detail and the team will respond in time.__**`
+        :
+        `### Bienvenue dans votre nouveau ticket <@${interaction.user.id}>! <:Pepega:1400572073881112666>\nType de ticket : \`aide\`\n**__Veuillez décrire votre problème en détail et l'équipe vous répondra dans les temps.__**`
+      )
+
+      const buttonClose = new ButtonBuilder()
+        .setCustomId(`ticket_close-${lang}`)
+        .setLabel(lang === 'en' ? 'Close' : 'Fermer')
+        .setStyle(ButtonStyle.Danger)
+        .setEmoji('🔒')
+
+      const buttonProcess = new ButtonBuilder()
+        .setCustomId(`ticket_process-${lang}`)
+        .setLabel(lang === 'en' ? 'Process' : 'Traiter')
+        .setStyle(ButtonStyle.Success)
+        .setEmoji('🙋‍♂️')
+
+      const actionRowButtons = new ActionRowBuilder().addComponents(
+        buttonClose,
+        buttonProcess
+      )
+    
+      const container = new ContainerBuilder()
+        .addTextDisplayComponents(text)
+        .addActionRowComponents(actionRowButtons)
+
       await channel.send({
-        content: `<@${interaction.user.id}>`
+        flags: MessageFlags.IsComponentsV2,
+        components: [container]
       })
 
       await interaction.editReply({
@@ -377,6 +443,40 @@ client.on(Events.InteractionCreate, async interaction => {
         components: [container]
       })
     }
+  } else if (interaction.customId.substr(0,12) === 'ticket_close') {
+    await interaction.deferReply()
+    const lang = interaction.customId.split('-')[1]
+
+    const buttonYes = new ButtonBuilder()
+      .setCustomId(`ticket_close-yes-${lang}`)
+      .setLabel(lang === 'en' ? 'Yes' : 'Oui')
+      .setStyle(ButtonStyle.Danger)
+
+    const buttonNo = new ButtonBuilder()
+      .setCustomId(`ticket_close-no-${lang}`)
+      .setLabel(lang === 'en' ? 'No' : 'Non')
+      .setStyle(ButtonStyle.Success)
+
+    const actionRowButtons = new ActionRowBuilder().addComponents(
+      buttonYes,
+      buttonNo
+    )
+
+    await interaction.editReply({
+      content: lang === 'en' ? "Are you sure to close this ticket?" : "Êtes-vous sûr de vouloir fermer ce ticket ?",
+      components: [actionRowButtons]
+    })
+  } else if (interaction.customId.substr(0,14) === 'ticket_process') {
+    await interaction.deferReply({ ephemeral: true })
+    const lang = interaction.customId.split('-')[1]
+    
+    await interaction.channel.send({
+      content: lang === 'en' ? `This ticket is now processed by <@${interaction.user.id}>!` : `Ce ticket est maintenant traité par <@${interaction.user.id}>!`
+    })
+
+    await interaction.editReply({
+      content: lang === 'en' ? "You are now processing this ticket!" : "Vous traitez maintenant ce ticket !"
+    })
   }
 })
 
