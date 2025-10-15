@@ -1,0 +1,78 @@
+{
+  "presence": { "watching": "Watching FairPlay's members" },
+  "commands": {
+    "vanish": { "on": "You are now vanished 👀", "off": "You are no longer vanished 🫣" },
+    "tickets_show": {
+      "sent": "The container has been sent!",
+      "heading": "### 🎫 Need to contact the staff? You're in the right place!\n**Please select your language to continue:**",
+      "help": "Help",
+      "candidate": "Candidate"
+    },
+    "tickets_config": {
+      "choose_lang": "### Choose your language",
+      "lang_en": "English",
+      "lang_fr": "Français"
+    }
+  },
+  "tickets": {
+    "type": {
+      "menu_title": "### Choose a ticket type\nIf you want to do a partnership, please contact a staff member directly in DM.",
+      "placeholder": "Select a ticket type",
+      "help": "Help",
+      "candidate": "Candidate"
+    },
+    "modal": {
+      "candidate_title": "Become staff of FairPlay",
+      "age_label": "How old are you?",
+      "age_placeholder": "16 years old",
+      "position_label": "What position are you applying for?",
+      "position_placeholder": "Developer",
+      "detail_label": "Why do you want to do this in detail?",
+      "detail_placeholder": "I want to be developer in FairPlay because I want to create a bot to become the server active",
+      "qualities_label": "What are your qualities and your defects?",
+      "qualities_placeholder": "I am a team player, then I have good communication skills...",
+      "remunerated_label": "I want to be remunerated",
+      "remunerated_placeholder": "Yes"
+    },
+    "new": {
+      "help": "### Welcome to your new ticket <@{userId}>! <:Pepega:1400572073881112666>\nTicket type: `help`\n**__Please describe your problem in detail and the team will respond in time.__**",
+      "candidate": "### Welcome to your new ticket <@{userId}>! <:Pepega:1400572073881112666>\nTicket type: `candidate`\nTicket language: `English`\nAge: `{age}`\nPosition: `{position}`\nDetails: ```{detail}```\nQualities/defects: ```{qualities}```\nWants to be remunerated: `{remunerated}`"
+    },
+    "buttons": {
+      "close": "Close",
+      "process": "Process",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "processed": {
+      "notice": "This ticket is now processed by <@{userId}>!",
+      "reply": "You are now processing this ticket!"
+    },
+    "close": {
+      "confirm": "Are you sure to close this ticket?",
+      "soon": "This ticket will be closed in a moment."
+    }
+  },
+  "config": {
+    "step1": {
+      "title": "### In which category would you like that the ticket will be created?",
+      "create": "Create a category",
+      "use": "Use an existing category",
+      "none": "Don't use a category"
+    },
+    "step2": { "select_category": "### Please select a category" },
+    "step3": { "select_role": "### Please select a staff role (to ping)" },
+    "select": {
+      "placeholder_category": "No category selected",
+      "placeholder_role": "No role selected"
+    },
+    "modal": {
+      "create_category": {
+        "title": "Create a category",
+        "name": "Category Name",
+        "placeholder": "Enter category name"
+      }
+    },
+    "error": "An error occurred while creating the category. Please try again later or contact the developer"
+  }
+}

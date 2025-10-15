@@ -2,13 +2,15 @@
   "name": "fpbot",
   "version": "1.0.0",
   "description": "discord bot",
-  "main": "index.cjs",
+  "main": "index.js",
   "scripts": {
-    "start": "bun index.cjs"
+    "start": "bun index.js",
+    "dev": "bun --watch index.js"
   },
   "author": "SoNaCl and Poulpe Glacé",
   "license": "MIT",
   "dependencies": {
+    "@discordjs/rest": "^2.4.0",
     "discord.js": "^14.23.2",
     "dotenv": "^17.2.3",
     "marked": "^16.4.0"
