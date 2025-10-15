@@ -1,5 +1,5 @@
-`npm run depsinstall` to install the depandicies
+`bun i` to install the dependencies
 
-`npm run dev` to modify the code
+`bun run dev` to watchdog
 
-`npm run start` to launch 
+`bun run start` to launch

@@ -1,0 +1,78 @@
+{
+  "presence": { "watching": "Surveille les membres de FairPlay" },
+  "commands": {
+    "vanish": { "on": "Tu es maintenant invisible 👀", "off": "Tu n'es plus invisible 🫣" },
+    "tickets_show": {
+      "sent": "Le conteneur a été envoyé !",
+      "heading": "### 🎫 Besoin de contacter l'équipe ? Vous êtes au bon endroit !\n**Veuillez sélectionner votre langue pour continuer :**",
+      "help": "Aide",
+      "candidate": "Postuler"
+    },
+    "tickets_config": {
+      "choose_lang": "### Choisissez votre langue",
+      "lang_en": "English",
+      "lang_fr": "Français"
+    }
+  },
+  "tickets": {
+    "type": {
+      "menu_title": "### Choisissez un type de ticket\nSi vous souhaitez faire un partenariat, veuillez contacter un membre du personnel directement en MP.",
+      "placeholder": "Sélectionnez un type de ticket",
+      "help": "Aide",
+      "candidate": "Postuler"
+    },
+    "modal": {
+      "candidate_title": "Faire partie de l'équipe de FairPlay",
+      "age_label": "Quel âge avez-vous ?",
+      "age_placeholder": "16 ans",
+      "position_label": "Quel poste voulez-vous occuper ?",
+      "position_placeholder": "Développeur",
+      "detail_label": "Que voulez vous faire ?",
+      "detail_placeholder": "Je veux être développeur chez FairPlay car je souhaite créer un bot pour rendre le serveur actif",
+      "qualities_label": "Quelles sont vos qualités et vos défauts ?",
+      "qualities_placeholder": "Je suis un joueur d'équipe, donc j'ai de bonnes compétences en communication...",
+      "remunerated_label": "Je veux être rémunéré",
+      "remunerated_placeholder": "Oui"
+    },
+    "new": {
+      "help": "### Bienvenue dans votre nouveau ticket <@{userId}>! <:Pepega:1400572073881112666>\nType de ticket : `aide`\n**__Veuillez décrire votre problème en détail et l'équipe vous répondra dans les temps.__**",
+      "candidate": "### Bienvenue dans votre nouveau ticket <@{userId}>! <:Pepega:1400572073881112666>\nType de ticket : `postuler`\nLangue du ticket : `Français`\nÂge : `{age}`\nPoste désiré : `{position}`\nDétails : ```{detail}```\nQualités/défauts : ```{qualities}```\nVeut être rémunéré ? : `{remunerated}`"
+    },
+    "buttons": {
+      "close": "Fermer",
+      "process": "Traiter",
+      "yes": "Oui",
+      "no": "Non"
+    },
+    "processed": {
+      "notice": "Ce ticket est maintenant traité par <@{userId}>!",
+      "reply": "Vous traitez maintenant ce ticket !"
+    },
+    "close": {
+      "confirm": "Êtes-vous sûr de vouloir fermer ce ticket ?",
+      "soon": "Ce ticket sera fermé dans un instant."
+    }
+  },
+  "config": {
+    "step1": {
+      "title": "### Dans quelle catégorie souhaitez-vous que les tickets soient créés ?",
+      "create": "Créer une catégorie",
+      "use": "Utiliser une catégorie existante",
+      "none": "Ne pas utiliser de catégorie"
+    },
+    "step2": { "select_category": "### Séléctionnez une catégorie" },
+    "step3": { "select_role": "### Séléctionnez un rôle staff (à ping)" },
+    "select": {
+      "placeholder_category": "Aucune catégorie séléctionnée",
+      "placeholder_role": "Aucun rôle séléctionné"
+    },
+    "modal": {
+      "create_category": {
+        "title": "Créer une catégorie",
+        "name": "Nom de la catégorie",
+        "placeholder": "Entrez le nom de la catégorie"
+      }
+    },
+    "error": "Une erreur est survenue lors de la création de la catégorie. Veuillez réessayer plus tard ou contacter le développeur."
+  }
+}
