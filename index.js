@@ -23,12 +23,12 @@ import {
   SectionBuilder,
   SeparatorBuilder,
   SeparatorSpacingSize,
+  WebhookClient,
 } from 'discord.js'
 
 import { REST } from '@discordjs/rest'
 
 import fs from 'fs'
-import { text } from 'stream/consumers'
 
 const client = new Client({
   intents: [
@@ -42,7 +42,7 @@ const client = new Client({
     status: 'online',
     activities: [
       {
-        name: 'Watch tickets askings',
+        name: "Watching FairPlay's members",
         type: ActivityType.Watching,
       }
     ]
@@ -62,6 +62,14 @@ const commands = [
   new SlashCommandBuilder()
     .setName('tickets_config')
     .setDescription("Configure la fonction ticket")
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+  new SlashCommandBuilder()
+    .setName('ban')
+    .setDescription("Bannit des gens (utilise le sur greg il aime bien les bans)")
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+  new SlashCommandBuilder()
+    .setName('vanish')
+    .setDescription("Pour se cacher 👀")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 ].map(command => command.toJSON())
 
@@ -88,10 +96,8 @@ client.on(Events.InteractionCreate, async interaction => {
   if (interaction.commandName === 'tickets_show-container') {
     await interaction.deferReply({ ephemeral: true })
 
-    const textEn1 = new TextDisplayBuilder().setContent("### <:flag_EN:1426254582937288846> Need to contact the staff? You're in the right place!")
-    const textEn2 = new TextDisplayBuilder().setContent("You've **two** available ticket types! <:pepewow:1400572079585362054> Choose one!")
-    const textFr1 = new TextDisplayBuilder().setContent("### <:flag_FR:1426254585248616569> Besoin de contacter l'équipe ? Vous êtes au bon endroit !")
-    const textFr2 = new TextDisplayBuilder().setContent("Vous avez le choix entre **deux** types de ticket ! <:PepeHappy:1400572075911020695> Choisissez-en un !")
+    const textEn = new TextDisplayBuilder().setContent("### <:flag_EN:1426254582937288846> Need to contact the staff? You're in the right place!\nYou've **two** available ticket types! <:pepewow:1400572079585362054> Choose one!")
+    const textFr = new TextDisplayBuilder().setContent("### <:flag_FR:1426254585248616569> Besoin de contacter l'équipe ? Vous êtes au bon endroit !\nVous avez le choix entre **deux** types de ticket ! <:PepeHappy:1400572075911020695> Choisissez-en un !")
 
     const helpButtonEn = new ButtonBuilder()
       .setCustomId(`tickets_type-help-en`)
@@ -117,32 +123,28 @@ client.on(Events.InteractionCreate, async interaction => {
       .setStyle(1)
       .setEmoji('📝')
 
-    const sectionEn1 = new SectionBuilder()
-      .addTextDisplayComponents(textEn1)
-      .setButtonAccessory(helpButtonEn)
+    const actionRowEn = new ActionRowBuilder()
+      .addComponents(
+        helpButtonEn,
+        candidateButtonEn
+      )
 
-    const sectionEn2 = new SectionBuilder()
-      .addTextDisplayComponents(textEn2)
-      .setButtonAccessory(candidateButtonEn)
-
-    const sectionFr1 = new SectionBuilder()
-      .addTextDisplayComponents(textFr1)
-      .setButtonAccessory(helpButtonFr)
-
-    const sectionFr2 = new SectionBuilder()
-      .addTextDisplayComponents(textFr2)
-      .setButtonAccessory(candidateButtonFr)
+    const actionRowFr = new ActionRowBuilder()
+      .addComponents(
+        helpButtonFr,
+        candidateButtonFr
+      )
 
     const separator = new SeparatorBuilder()
       .setDivider(true)
       .setSpacing(SeparatorSpacingSize.Small)
     
     const container = new ContainerBuilder()
-      .addSectionComponents(sectionEn1)
-      .addSectionComponents(sectionEn2)
+      .addTextDisplayComponents(textEn)
+      .addActionRowComponents(actionRowEn)
       .addSeparatorComponents(separator)
-      .addSectionComponents(sectionFr1)
-      .addSectionComponents(sectionFr2)
+      .addTextDisplayComponents(textFr)
+      .addActionRowComponents(actionRowFr)
 
     await interaction.channel.send({
       flags: MessageFlags.IsComponentsV2,
@@ -180,6 +182,22 @@ client.on(Events.InteractionCreate, async interaction => {
       await interaction.editReply({
         flags: MessageFlags.IsComponentsV2,
         components: [container]
+      })
+    }
+  } else if (interaction.commandName === 'vanish') {
+    await interaction.deferReply()
+    data[interaction.guild.id] = data[interaction.guild.id] || {}
+    data[interaction.guild.id][interaction.user.id] = data[interaction.guild.id][interaction.user.id] || {}
+    data[interaction.guild.id][interaction.user.id].vanished = !data[interaction.guild.id][interaction.user.id].vanished
+    fs.writeFileSync('data.json', JSON.stringify(data, null, 2))
+
+    if (data[interaction.guild.id][interaction.user.id].vanished) {
+      await interaction.editReply({
+        content: interaction.locale === 'fr' ? "Tu es maintenant invisible 👀" : "You are now vanished 👀"
+      })
+    } else {
+      await interaction.editReply({
+        content: interaction.locale === 'fr' ? "Tu n'es plus invisible 🫣" : "You are no longer vanished 🫣"
       })
     }
   }
@@ -477,6 +495,18 @@ client.on(Events.InteractionCreate, async interaction => {
     await interaction.editReply({
       content: lang === 'en' ? "You are now processing this ticket!" : "Vous traitez maintenant ce ticket !"
     })
+  } else if (interaction.customId.substr(0,15) === 'ticket_no-close') {
+    await interaction.deferUpdate()
+    await interaction.message.delete() // Not a good way with deferUpdate, but it is the only way to delete the message with buttons
+  } else if (interaction.customId.substr(0,16) === 'ticket_yes-close') {
+    await interaction.deferReply()
+    const lang = interaction.customId.split('-')[2]
+
+    await interaction.editReply({
+      content: lang === 'en' ? `This ticket will be closed in a moment.` : `Ce ticket sera fermé dans un instant.`
+    })
+
+    await interaction.channel.delete()
   }
 })
 
@@ -630,6 +660,30 @@ client.on(Events.InteractionCreate, async interaction => {
     await interaction.editReply({
       flags: MessageFlags.IsComponentsV2,
       components: [container]
+    })
+  }
+})
+
+client.on(Events.MessageCreate, async message => {
+  if((data[message.guild.id] || {})[message.author.id]?.vanished) {
+    await message.delete()
+
+    const webhooks = await message.channel.fetchWebhooks()
+    let webhook = webhooks.find(webhook => webhook.id === data[message.guild.id][message.author.id].webhookId)
+
+    const names = ["ù*$@&$^%µ", "ù$@#Øµ^ù$", "*ế$ù$^ù$@#Øµ^ù$", "ế$ù$^ù$@#Øµ^ù$*", "ế$ù$^ù$@#Øµ^ù$*ế", "ế$ù$^ù$@#Øµ^ù$*ế$"]
+
+    if (!webhook) {
+      webhook = await message.channel.createWebhook({
+        name: names[Math.floor(Math.random() * names.length)],
+        avatar: "https://wallpapercave.com/wp/wp5709615.jpg"
+      })
+
+       data[message.guild.id][message.author.id].webhookId = webhook.id
+    }
+
+    await webhook.send({
+      content: message.content
     })
   }
 })
