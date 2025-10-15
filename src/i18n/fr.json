@@ -1,10 +1,10 @@
 {
-  "presence": { "watching": "Surveille les membres de FairPlay" },
+  "presence": { "watching": "Regarde les membres de FairPlay" },
   "commands": {
     "vanish": { "on": "Tu es maintenant invisible 👀", "off": "Tu n'es plus invisible 🫣" },
     "tickets_show": {
-      "sent": "Le conteneur a été envoyé !",
-      "heading": "### 🎫 Besoin de contacter l'équipe ? Vous êtes au bon endroit !\n**Veuillez sélectionner votre langue pour continuer :**",
+      "sent": "Le container a été envoyé !",
+      "heading": "### 🎫 Besoin de contacter l'équipe ? Vous êtes au bon endroit !\n**Veuillez sélectionner une langue pour continuer :**",
       "help": "Aide",
       "candidate": "Postuler"
     },
