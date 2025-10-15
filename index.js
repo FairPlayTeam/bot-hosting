@@ -448,12 +448,12 @@ client.on(Events.InteractionCreate, async interaction => {
     const lang = interaction.customId.split('-')[1]
 
     const buttonYes = new ButtonBuilder()
-      .setCustomId(`ticket_close-yes-${lang}`)
+      .setCustomId(`ticket_yes-close-${lang}`)
       .setLabel(lang === 'en' ? 'Yes' : 'Oui')
       .setStyle(ButtonStyle.Danger)
 
     const buttonNo = new ButtonBuilder()
-      .setCustomId(`ticket_close-no-${lang}`)
+      .setCustomId(`ticket_no-close-${lang}`)
       .setLabel(lang === 'en' ? 'No' : 'Non')
       .setStyle(ButtonStyle.Success)
 
