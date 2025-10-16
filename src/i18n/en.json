@@ -12,6 +12,12 @@
       "choose_lang": "### Choose your language",
       "lang_en": "English",
       "lang_fr": "Français"
+    },
+    "ban": {
+      "by": "Banned by",
+      "error1": "I couldn't ban",
+      "error2": "Certainly an administrator or myself.",
+      "success": "BANNED"
     }
   },
   "tickets": {
