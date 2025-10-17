@@ -14,6 +14,11 @@ import * as vanish from './commands/vanish.js'
 import * as ticketsShow from './commands/tickets_show-container.js'
 import * as ticketsConfig from './commands/tickets_config.js'
 import * as ban from './commands/ban.js'
+<<<<<<< Updated upstream
+=======
+import * as say from './commands/say.js'
+import * as snipe from './commands/snipe.js'
+>>>>>>> Stashed changes
 
 import { routeInteraction } from './interactions/router.js'
 import { onMessageCreate } from './events/messageCreate.js'
@@ -22,7 +27,7 @@ if (!token) {
   console.error('TOKEN is not set; cannot start bot')
   process.exit(1)
 }
-const client = new Client({
+export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -68,6 +73,17 @@ client.on(Events.InteractionCreate, async interaction => {
 })
 
 client.on(Events.MessageCreate, onMessageCreate(store))
-
+client.on(Events.MessageDelete, (message, store ) => {
+  if (!message.content || message.author?.bot) return
+  store.deletedMessages.unshift({
+    author: message.author.tag,
+    content: message.content,
+    channel: message.channel.name,
+    time: new Date()
+    
+  })
+  if (deletedMessages.length > 100) deletedMessages.pop() // limite à 100
+  console.log(deletedMessages)
+})
 registerCommands().catch(console.error)
 client.login(token)
