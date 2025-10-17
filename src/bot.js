@@ -15,6 +15,8 @@ import * as ticketsShow from './commands/tickets_show-container.js'
 import * as ticketsConfig from './commands/tickets_config.js'
 import * as ban from './commands/ban.js'
 import * as say from './commands/say.js'
+import * as update from './commands/update.js'
+import * as restart from './commands/restart.js'
 
 import { routeInteraction } from './interactions/router.js'
 import { onMessageCreate } from './events/messageCreate.js'
@@ -39,7 +41,7 @@ const client = new Client({
 
 const store = new JsonStore('data.json')
 
-const commandModules = [vanish, ticketsShow, ticketsConfig, ban, say]
+const commandModules = [vanish, ticketsShow, ticketsConfig, ban, say, update, restart]
 const commands = commandModules.map(c => c.data.toJSON())
 
 const rest = new REST({ version: '10' }).setToken(token)

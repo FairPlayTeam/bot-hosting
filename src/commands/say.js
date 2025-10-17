@@ -1,13 +1,9 @@
 import {
-	Events,
-	AttachmentBuilder,
 	SlashCommandBuilder,
 	PermissionFlagsBits,
-    Webhook,
     MessageFlags,
 } from 'discord.js'
-import axios from 'axios'
-import { t, getLangFromInteraction } from '../i18n/index.js'    
+  
 
 export const data = new SlashCommandBuilder()
   .setName('say')
