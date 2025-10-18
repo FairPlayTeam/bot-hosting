@@ -50,4 +50,24 @@ export class JsonStore {
     this.data[guildId].ticketConfig = config
     this.save()
   }
+  getDeletedMessage(channelId, number){
+    this.data["deletedMessages"] = this.data["deletedMessages"] || {}
+    this.data["deletedMessages"][channelId] = this.data["deletedMessages"][channelId] || []
+    return this.data["deletedMessages"][channelId].slice(0,number)
+
+  }
+  addDeletedMessage(channelId, message){
+    this.data["deletedMessages"] = this.data["deletedMessages"] || {}
+    this.data["deletedMessages"][channelId] = this.data["deletedMessages"][channelId] || []
+    this.data["deletedMessages"][channelId].unshift({
+      author: message.author.tag,
+      content: message.content,
+      avatar: message.author.displayAvatarURL({ extension: 'png', size: 128 }),
+      time: new Date().toLocaleTimeString(),
+    })
+    if (this.data["deletedMessages"][channelId] > 50 ) {
+      this.data["deletedMessages"][channelId].pop
+    }
+    this.save()
+  }
 }

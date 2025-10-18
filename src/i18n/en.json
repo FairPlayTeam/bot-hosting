@@ -18,6 +18,12 @@
       "error1": "I couldn't ban",
       "error2": "Certainly an administrator or myself.",
       "success": "BANNED"
+    },
+    "unban": {
+      "by": "Unbanned by",
+      "error1": "I couldn't unban",
+      "error2": "Certainly an administrator or myself.",
+      "success": "UNBANNED"
     }
   },
   "tickets": {
