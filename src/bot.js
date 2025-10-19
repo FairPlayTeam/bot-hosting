@@ -45,7 +45,7 @@ const client = new Client({
 
 export const store = new JsonStore('data.json')
 
-const commandModules = [vanish, ticketsShow, ticketsConfig, ban, say, update, restart, snipe, unban]
+const commandModules = [vanish, ticketsShow, ticketsConfig, ban, say, update, restart, snipe/*, unban*/]
 const commands = commandModules.map(c => c.data.toJSON())
 
 const rest = new REST({ version: '10' }).setToken(token)
