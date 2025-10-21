@@ -21,6 +21,7 @@ export const IDS = {
     typePrefix: 'tickets_type',
     typeHelp: 'tickets_type-help',
     typeCandidatePrefix: 'tickets_type-candidate',
+    typeReportPrefix : 'tickets_type-report',
     configStep1: 'tickets_config-step1',
     configStep2: 'tickets_config-step2',
     configStep3: 'tickets_config-step3',

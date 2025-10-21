@@ -31,7 +31,8 @@
       "menu_title": "### Choisissez un type de ticket\nSi vous souhaitez faire un partenariat, veuillez contacter un membre du personnel directement en MP.",
       "placeholder": "Sélectionnez un type de ticket",
       "help": "Aide",
-      "candidate": "Postuler"
+      "candidate": "Postuler",
+      "report" : "Reporter un bug"
     },
     "modal": {
       "candidate_title": "Faire partie de l'équipe de FairPlay",
@@ -48,7 +49,8 @@
     },
     "new": {
       "help": "### Bienvenue dans votre nouveau ticket <@{userId}>! <:Pepega:1400572073881112666>\nType de ticket : `aide`\n**__Veuillez décrire votre problème en détail et l'équipe vous répondra dans les temps.__**",
-      "candidate": "### Bienvenue dans votre nouveau ticket <@{userId}>! <:Pepega:1400572073881112666>\nType de ticket : `postuler`\nLangue du ticket : `Français`\nÂge : `{age}`\nPoste désiré : `{position}`\nDétails : ```{detail}```\nQualités/défauts : ```{qualities}```\nVeut être rémunéré ? : `{remunerated}`"
+      "candidate": "### Bienvenue dans votre nouveau ticket <@{userId}>! <:Pepega:1400572073881112666>\nType de ticket : `postuler`\nLangue du ticket : `Français`\nÂge : `{age}`\nPoste désiré : `{position}`\nDétails : ```{detail}```\nQualités/défauts : ```{qualities}```\nVeut être rémunéré ? : `{remunerated}`",
+      "report": "### Bienvenue dans votre nouveau ticket <@{userId}>! <:Pepega:1400572073881112666>\nType de ticket : `rapport de bug`\n**__Veuillez décrire le problème en détail. Merci de votre contribution**"
     },
     "buttons": {
       "close": "Fermer",

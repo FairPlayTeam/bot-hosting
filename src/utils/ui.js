@@ -5,7 +5,7 @@ export function wrapInRow(component) {
   return new ActionRowBuilder().addComponents(component)
 }
 
-export function extractLang(customId, startIndex = -2) {
+export function extractLang(customId, startIndex = -1) {
   const parts = customId.split(/[-$]/)
   return parts[parts.length + startIndex] || LANG.DEFAULT
 }

@@ -31,7 +31,8 @@
       "menu_title": "### Choose a ticket type\nIf you want to do a partnership, please contact a staff member directly in DM.",
       "placeholder": "Select a ticket type",
       "help": "Help",
-      "candidate": "Candidate"
+      "candidate": "Candidate",
+      "report": "Report a bug"
     },
     "modal": {
       "candidate_title": "Become staff of FairPlay",
@@ -48,7 +49,8 @@
     },
     "new": {
       "help": "### Welcome to your new ticket <@{userId}>! <:Pepega:1400572073881112666>\nTicket type: `help`\n**__Please describe your problem in detail and the team will respond in time.__**",
-      "candidate": "### Welcome to your new ticket <@{userId}>! <:Pepega:1400572073881112666>\nTicket type: `candidate`\nTicket language: `English`\nAge: `{age}`\nPosition: `{position}`\nDetails: ```{detail}```\nQualities/defects: ```{qualities}```\nWants to be remunerated: `{remunerated}`"
+      "candidate": "### Welcome to your new ticket <@{userId}>! <:Pepega:1400572073881112666>\nTicket type: `candidate`\nTicket language: `English`\nAge: `{age}`\nPosition: `{position}`\nDetails: ```{detail}```\nQualities/defects: ```{qualities}```\nWants to be remunerated: `{remunerated}`",
+      "report": "### Welcome to your new ticket <@${userId}>! <:Pepega:1400572073881112666>\nTicket type: `bug report`\n**__Please describe the issue in detail. Thank you for your contribution!__**"
     },
     "buttons": {
       "close": "Close",

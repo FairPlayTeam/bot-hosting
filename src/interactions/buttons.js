@@ -12,7 +12,7 @@ import {
 import { IDS, EMOJIS } from '../constants.js'
 import { t } from '../i18n/index.js'
 import { wrapInRow, extractLang } from '../utils/ui.js'
-import { createHelpTicket } from '../tickets/types/help.js'
+import { createHelpTicket, createReportTicket } from '../tickets/types/help.js'
 import {
   handleConfigStep1,
   handleConfigStep2,
@@ -22,6 +22,7 @@ import {
 function getButtonType(customId) {
   if (customId.startsWith(IDS.tickets.langPrefix)) return 'TICKETS_LANG'
   if (customId.startsWith(IDS.tickets.typeHelp)) return 'TICKETS_TYPE_HELP'
+  if (customId.startsWith(IDS.tickets.typeReportPrefix)) return 'TICKETS_TYPE_REPORT'
   if (customId.startsWith(IDS.tickets.typeCandidatePrefix)) return 'TICKETS_TYPE_CANDIDATE'
   if (customId.startsWith(IDS.ticket.close)) return 'TICKET_CLOSE'
   if (customId.startsWith(IDS.ticket.process)) return 'TICKET_PROCESS'
@@ -40,7 +41,8 @@ export async function handleButton(interaction, context) {
   switch (buttonType) {
     case 'TICKETS_LANG': {
       await interaction.deferReply({ flags: MessageFlags.Ephemeral })
-      const lang = extractLang(interaction.customId)
+      const lang = extractLang(interaction.customId,-1)
+      console.log(interaction.customId, lang)
 
       const text = new TextDisplayBuilder().setContent(t(lang, 'tickets.type.menu_title'))
       const helpButton = new ButtonBuilder()
@@ -48,6 +50,11 @@ export async function handleButton(interaction, context) {
         .setLabel(t(lang, 'tickets.type.help'))
         .setStyle(1)
         .setEmoji(EMOJIS.HELP)
+      const reportButton = new ButtonBuilder()
+        .setCustomId(`${IDS.tickets.typeReportPrefix}-${lang}`)
+        .setLabel(t(lang, 'tickets.type.report'))
+        .setStyle(1)
+        .setEmoji(EMOJIS.CANDIDATE)
       const candidateButton = new ButtonBuilder()
         .setCustomId(`${IDS.tickets.typeCandidatePrefix}-${lang}`)
         .setLabel(t(lang, 'tickets.type.candidate'))
@@ -56,7 +63,7 @@ export async function handleButton(interaction, context) {
 
       const container = new ContainerBuilder()
         .addTextDisplayComponents(text)
-        .addActionRowComponents(new ActionRowBuilder().addComponents(helpButton, candidateButton))
+        .addActionRowComponents(new ActionRowBuilder().addComponents(helpButton,reportButton, candidateButton))
 
       await interaction.editReply({ flags: MessageFlags.IsComponentsV2, components: [container] })
       return true
@@ -64,10 +71,22 @@ export async function handleButton(interaction, context) {
 
     case 'TICKETS_TYPE_HELP': {
       await interaction.deferReply({ flags: MessageFlags.Ephemeral })
+      console.log(interaction.customId)
+      const lang = extractLang(interaction.customId, -1)
+
+      const config = store?.getTicketConfig(interaction.guild.id,lang)
+      console.log(lang , config, store.getTicketConfig(interaction.guild.id,lang) )
+      const channel = await createHelpTicket(interaction, lang, config)
+      await interaction.editReply({ content: `👀 <#${channel.id}>` })
+      return true
+    }
+
+    case 'TICKETS_TYPE_REPORT': {
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral })
       const lang = extractLang(interaction.customId)
 
       const config = store?.getTicketConfig(interaction.guild.id)
-      const channel = await createHelpTicket(interaction, lang, config)
+      const channel = await createReportTicket(interaction, lang, config)
       await interaction.editReply({ content: `👀 <#${channel.id}>` })
       return true
     }

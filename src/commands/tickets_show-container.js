@@ -19,7 +19,6 @@ export async function execute(interaction) {
   await interaction.deferReply({ flags: MessageFlags.Ephemeral })
 
   const lang = getLangFromInteraction(interaction)
-
   const text = new TextDisplayBuilder().setContent(t(lang, 'commands.tickets_show.heading'))
   const buttonEnglish = new ButtonBuilder()
     .setCustomId(`${IDS.tickets.langPrefix}-${LANG.EN}`)
@@ -31,7 +30,7 @@ export async function execute(interaction) {
     .setLabel('Français')
     .setStyle(1)
     .setEmoji(EMOJIS.FLAG_FR)
-
+  
   const actionRow = new ActionRowBuilder().addComponents(buttonEnglish, buttonFrench)
 
   const container = new ContainerBuilder()

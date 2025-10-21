@@ -40,14 +40,18 @@ export class JsonStore {
     this.save()
   }
 
-  getTicketConfig(guildId) {
+  getTicketConfig(guildId, lang) {
     this.data[guildId] = this.data[guildId] || {}
-    return this.data[guildId].ticketConfig || null
+    console.log(lang, this.data[guildId].ticketConfig[lang])
+    return this.data[guildId].ticketConfig[lang] || null
   }
 
   setTicketConfig(guildId, config) {
     this.data[guildId] = this.data[guildId] || {}
-    this.data[guildId].ticketConfig = config
+    console.log(config["lang"])
+    const configActual = this.data[guildId].ticketConfig || {}
+    const cfg = { ...configActual, [config["lang"]]: config }
+    this.data[guildId].ticketConfig = cfg
     this.save()
   }
   getDeletedMessage(channelId, number){
@@ -65,8 +69,8 @@ export class JsonStore {
       avatar: message.author.displayAvatarURL({ extension: 'png', size: 128 }),
       time: new Date().toLocaleTimeString(),
     })
-    if (this.data["deletedMessages"][channelId] > 50 ) {
-      this.data["deletedMessages"][channelId].pop
+    if (this.data["deletedMessages"][channelId].length > 50 ) {
+      this.data["deletedMessages"][channelId].pop()
     }
     this.save()
   }
