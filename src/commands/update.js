@@ -15,7 +15,7 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async interaction => {
   console.log("Updating the bot")
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply();
     await interaction.editReply('Updating the bot...');
     const __filename = fileURLToPath(import.meta.url)
     const __dirname = path.dirname(__filename)
