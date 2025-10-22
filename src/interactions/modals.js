@@ -15,10 +15,9 @@ export async function handleModal(interaction, context) {
       remunerated: interaction.fields.getTextInputValue('remunerated'),
     }
     const lang = extractLang(interaction.customId)
-
     await interaction.deferReply({ flags: MessageFlags.Ephemeral })
 
-    const config = store?.getTicketConfig(interaction.guild.id)
+    const config = store?.getTicketConfig(interaction.guild.id,lang)
     const channel = await createCandidateTicket(interaction, lang, formData, config)
     await interaction.editReply({ content: `👀 <#${channel.id}>` })
     return true

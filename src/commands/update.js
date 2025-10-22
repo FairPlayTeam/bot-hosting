@@ -1,11 +1,11 @@
-import os from 'os'
+
 import path from 'path'
 import { spawn } from 'child_process'
 import { fileURLToPath } from 'url' 
 import {
 	SlashCommandBuilder,
 	PermissionFlagsBits,
-    MessageFlags
+    
 } from 'discord.js'
 
 export const data = new SlashCommandBuilder()
@@ -14,15 +14,17 @@ export const data = new SlashCommandBuilder()
   .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 
 export const execute = async interaction => {
-    await interaction.reply({ content: 'Updating the bot ...'})
+  console.log("Updating the bot")
+    await interaction.deferReply({ ephemeral: true });
+    await interaction.editReply('Updating the bot...');
     const __filename = fileURLToPath(import.meta.url)
     const __dirname = path.dirname(__filename)
     const scriptPath = path.join(__dirname, '../utils/update.sh')
-    const platform = os.platform()
+  
     
 
     spawn(scriptPath, { shell: true, stdio: 'inherit' })
     
-    setTimeout(() => process.exit(0), 5000)
+    setTimeout(() => process.exit(0), 500000)
     
 }

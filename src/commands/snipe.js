@@ -20,9 +20,9 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async interaction => {
   const channelId = interaction.channel.id
-
+  const guildId = interaction.guild.id
   const number = interaction.options.getInteger("number") || 10
-  const messages = store.getDeletedMessage(channelId,number)
+  const messages = store.getDeletedMessage(guildId,channelId,number)
 
   if (messages.length === 0) {
     return interaction.reply({
