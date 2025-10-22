@@ -23,6 +23,6 @@ export const execute = async interaction => {
 
     spawn(scriptPath, { shell: true, stdio: 'inherit' })
     
-    setTimeout(() => process.exit(0), 5000)
+    setTimeout(() => process.exit(0), 50000)
     
 }
