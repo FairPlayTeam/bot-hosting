@@ -42,7 +42,8 @@ export class JsonStore {
 
   getTicketConfig(guildId, lang) {
     this.data[guildId] = this.data[guildId] || {}
-    return this.data[guildId].ticketConfig[lang] || null
+    const ticketConfig = this.data[guildId].ticketConfig || {}
+    return ticketConfig[lang] || null
   }
 
   setTicketConfig(guildId, config) {
