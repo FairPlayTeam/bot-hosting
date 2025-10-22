@@ -20,11 +20,9 @@ export const execute = async interaction => {
     const scriptPath = path.join(__dirname, '../utils/update.sh')
     const platform = os.platform()
     
-    if (platform === 'win32') {
-        spawn('start "" "../utils/update.bat"')
-    } else {
+
         spawn('bash', [scriptPath], { stdio: 'inherit' })
-    }
+    
     process.exit(0)
     
 }
