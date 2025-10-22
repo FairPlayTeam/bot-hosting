@@ -48,29 +48,56 @@ export class JsonStore {
 
   setTicketConfig(guildId, config) {
     this.data[guildId] = this.data[guildId] || {}
-    console.log(config["lang"])
     const configActual = this.data[guildId].ticketConfig || {}
     const cfg = { ...configActual, [config["lang"]]: config }
     this.data[guildId].ticketConfig = cfg
     this.save()
   }
-  getDeletedMessage(channelId, number){
-    this.data["deletedMessages"] = this.data["deletedMessages"] || {}
-    this.data["deletedMessages"][channelId] = this.data["deletedMessages"][channelId] || []
-    return this.data["deletedMessages"][channelId].slice(0,number)
+  isTicketChannel(guildId, channel) {
+    const configs =  this.data[guildId].ticketConfig || {}
+  
+    for (const config of Object.values(configs)) {
+      
+      if (config && config.categoryId === channel.parent?.id) {
+        return true
+      }
+    }
+    return false
+  }
+  logMessageChannel(guildId, message) {
+    this.data[guildId] = this.data[guildId] || {}
+    const channelId = message.channel.id
+    this.data[guildId].logChannel = this.data[guildId].logChannel || {}
+    this.data[guildId].logChannel[channelId] = this.data[guildId].logChannel[channelId] || []
+    const entry = {
+      author: message.author.tag,
+      content: message.content,
+      avatar: message.author.displayAvatarURL({ extension: 'png', size: 128 }),
+      time: new Date().toLocaleTimeString(),
+    }
+    this.data[guildId].logChannel[channelId].push(entry)
+    
+    this.save()
+  }
+  getDeletedMessage(guildId, channelId, number){
+    this.data[guildId].deletedMessages = this.data[guildId].deletedMessages || {}
+    this.data[guildId].deletedMessages[channelId] = this.data[guildId].deletedMessages[channelId] || []
+    return this.data[guildId].deletedMessages[channelId].slice(0,number)
 
   }
   addDeletedMessage(channelId, message){
-    this.data["deletedMessages"] = this.data["deletedMessages"] || {}
-    this.data["deletedMessages"][channelId] = this.data["deletedMessages"][channelId] || []
-    this.data["deletedMessages"][channelId].unshift({
+    
+    const guildId= message.guild.id
+    this.data[guildId].deletedMessages = this.data[guildId].deletedMessages || {}
+    this.data[guildId].deletedMessages[channelId] = this.data[guildId].deletedMessages[channelId] || []
+    this.data[guildId].deletedMessages[channelId].unshift({
       author: message.author.tag,
       content: message.content,
       avatar: message.author.displayAvatarURL({ extension: 'png', size: 128 }),
       time: new Date().toLocaleTimeString(),
     })
-    if (this.data["deletedMessages"][channelId].length > 50 ) {
-      this.data["deletedMessages"][channelId].pop()
+    if (this.data[guildId].deletedMessages[channelId].length > 50 ) {
+      this.data[guildId].deletedMessages[channelId].pop()
     }
     this.save()
   }
