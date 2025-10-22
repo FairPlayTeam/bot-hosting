@@ -1,4 +1,12 @@
-import { SlashCommandBuilder, MessageFlags,EmbedBuilder,PermissionFlagsBits } from 'discord.js'
+import {
+  SlashCommandBuilder,
+  MessageFlags,
+  ContainerBuilder,
+  TextDisplayBuilder,
+  ThumbnailBuilder,
+  SectionBuilder,
+  PermissionFlagsBits
+} from 'discord.js'
 import { store } from '../bot.js'
 
 
@@ -13,7 +21,7 @@ export const data = new SlashCommandBuilder()
 export const execute = async interaction => {
   const channelId = interaction.channel.id
 
-  const number = interaction.options.getInteger("number") || 1
+  const number = interaction.options.getInteger("number") || 10
   const messages = store.getDeletedMessage(channelId,number)
 
   if (messages.length === 0) {
@@ -23,19 +31,30 @@ export const execute = async interaction => {
     })
   }
 
-const embeds = messages.map((m, i) =>
-    new EmbedBuilder()
-      .setColor(0xff4444)
-      .setAuthor({
-        name: m.author,
-        iconURL: m.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png',
-      })
-      .setDescription(m.content || '')
-      .setFooter({ text: `Deleted the ${m.time}` })
-      .setTitle(`🕵️ Deleted Message #${i + 1}`)
-  )
+  const containers = messages.map((m, i) => {
+    const text = new TextDisplayBuilder().setContent(`Message is deleted:\n${m.content || '(no content)'}`)
+    const thumbnail = new ThumbnailBuilder().setURL(m.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png')
 
-  await interaction.reply({ embeds })
+    const section = new SectionBuilder()
+      .addTextDisplayComponents(text)
+      .setThumbnailAccessory(thumbnail)
+
+    const container = new ContainerBuilder()
+      .addSectionComponents(section)
+
+    return container
+  })
+
+  await interaction.reply({
+    flags: MessageFlags.IsComponentsV2,
+    components: [containers[0]]
+  })
+
+  for (let i = 1; i < containers.length-1; i++) {
+    await interaction.channel.send({
+      flags: MessageFlags.IsComponentsV2,
+      components: [containers[i+1]]
+    })
+  }
 
 }
-

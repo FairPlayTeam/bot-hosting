@@ -5,14 +5,16 @@ export const LANG = {
 }
 
 export const EMOJIS = {
-  FLAG_EN: '1426254582937288846',
-  FLAG_FR: '1426254585248616569',
+  FLAG_EN: '<:flag_EN:1426254582937288846>',
+  FLAG_FR: '<:flag_FR:1426254585248616569>',
   HELP: '❓',
   CANDIDATE: '📝',
   CLOSE: '🔒',
   PROCESS: '🙋‍♂️',
   CATEGORY: '<a:iconTextChannel:843595665996906496>',
   MENTION: '<a:iconMention:843530621951541249>',
+  PEPE_GUYS_BOUNCING: '<a:pepebedjump:1430150680911548547>',
+  PEPE_SAYING_HI: '<a:pepesalute:1430153526771716176>',
 }
 
 export const IDS = {
@@ -35,4 +37,13 @@ export const IDS = {
     yesClose: 'ticket_yes-close',
     noClose: 'ticket_no-close',
   },
+}
+
+export const CHANNELS = {
+  VERIFICATION: '1410750666644918422',
+  VOCAL_FR: '1410636918038855801',
+  VOCAL_EN: '1410636970266464256',
+  TEXT_FR: '1385601656758210684',
+  TEXT_EN: '1410185878495690752',
+  WELCOME: '1367910796687839324',
 }

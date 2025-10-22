@@ -24,6 +24,7 @@ import * as unban from './commands/unban.js'
 import { routeInteraction } from './interactions/router.js'
 import { onMessageCreate } from './events/messageCreate.js'
 import { onMessageDelete } from './events/messageDelete.js'
+import { onGuildMemberAdd } from './events/guildMemberAdd.js'
 
 if (!token) {
   console.error('TOKEN is not set; cannot start bot')
@@ -45,7 +46,7 @@ const client = new Client({
 
 export const store = new JsonStore('data.json')
 
-const commandModules = [vanish, ticketsShow, ticketsConfig, ban, say, update, restart, snipe/*, unban*/]
+const commandModules = [vanish, ticketsShow, ticketsConfig, ban, say, update, restart, snipe, unban]
 const commands = commandModules.map(c => c.data.toJSON())
 
 const rest = new REST({ version: '10' }).setToken(token)
@@ -76,6 +77,7 @@ client.on(Events.InteractionCreate, async interaction => {
 
 client.on(Events.MessageCreate, onMessageCreate(store))
 client.on(Events.MessageDelete, onMessageDelete(store))
+client.on(Events.GuildMemberAdd, onGuildMemberAdd())
 
 registerCommands().catch(console.error)
 client.login(token)
