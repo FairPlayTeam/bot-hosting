@@ -1,4 +1,3 @@
-
 import path from 'path'
 import { spawn } from 'child_process'
 import { fileURLToPath } from 'url' 
@@ -25,6 +24,6 @@ export const execute = async interaction => {
 
     spawn(scriptPath, { shell: true, stdio: 'inherit' })
     
-    setTimeout(() => process.exit(0), 500000)
+    setTimeout(() => process.exit(0), 5000)
     
 }

@@ -25,11 +25,7 @@ export async function createHelpTicket(interaction, lang, config) {
 
   const channel = await interaction.guild.channels.create(channelOptions)
 
-  let content = t(lang, 'tickets.new.help', { userId: interaction.user.id })
-
-  if (config?.roleId) {
-    content = `<@&${config.roleId}>\n\n${content}`
-  }
+  const content = t(lang, 'tickets.new.help', { userId: interaction.user.id })
 
   const text = new TextDisplayBuilder().setContent(content)
   const buttonClose = new ButtonBuilder()
@@ -48,6 +44,11 @@ export async function createHelpTicket(interaction, lang, config) {
     .addActionRowComponents(new ActionRowBuilder().addComponents(buttonClose, buttonProcess))
 
   await channel.send({ flags: MessageFlags.IsComponentsV2, components: [container] })
+
+  if (config?.roleId) {
+    const ghostpingText = `<@&${config.roleId}>`
+    const ghostping = await channel.send(ghostpingText)
+  }
 
   return channel
 }
