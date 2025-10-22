@@ -21,8 +21,8 @@ export const execute = async interaction => {
     const platform = os.platform()
     
 
-        spawn('bash', [scriptPath], { stdio: 'inherit' })
+    spawn(scriptPath, { shell: true, stdio: 'inherit' })
     
-    process.exit(0)
+    setTimeout(() => process.exit(0), 5000)
     
 }
