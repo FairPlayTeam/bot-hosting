@@ -18,7 +18,7 @@ export async function createHelpTicket(interaction, lang, config) {
       { id: interaction.user.id, allow: [PermissionFlagsBits.ViewChannel] },
     ],
   }
-console.log(config)
+
   if (config?.categoryId) {
     channelOptions.parent = config.categoryId
   }

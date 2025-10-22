@@ -42,7 +42,6 @@ export class JsonStore {
 
   getTicketConfig(guildId, lang) {
     this.data[guildId] = this.data[guildId] || {}
-    console.log(lang, this.data[guildId].ticketConfig[lang])
     return this.data[guildId].ticketConfig[lang] || null
   }
 

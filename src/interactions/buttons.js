@@ -42,7 +42,7 @@ export async function handleButton(interaction, context) {
     case 'TICKETS_LANG': {
       await interaction.deferReply({ flags: MessageFlags.Ephemeral })
       const lang = extractLang(interaction.customId,-1)
-      console.log(interaction.customId, lang)
+      
 
       const text = new TextDisplayBuilder().setContent(t(lang, 'tickets.type.menu_title'))
       const helpButton = new ButtonBuilder()
@@ -71,11 +71,11 @@ export async function handleButton(interaction, context) {
 
     case 'TICKETS_TYPE_HELP': {
       await interaction.deferReply({ flags: MessageFlags.Ephemeral })
-      console.log(interaction.customId)
+      
       const lang = extractLang(interaction.customId, -1)
 
       const config = store?.getTicketConfig(interaction.guild.id,lang)
-      console.log(lang , config, store.getTicketConfig(interaction.guild.id,lang) )
+      
       const channel = await createHelpTicket(interaction, lang, config)
       await interaction.editReply({ content: `👀 <#${channel.id}>` })
       return true
