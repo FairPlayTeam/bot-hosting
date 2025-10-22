@@ -14,6 +14,7 @@ export const data = new SlashCommandBuilder()
   .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 
 export const execute = async interaction => {
+  console.log("Updating the bot")
     await interaction.reply({ content: 'Updating the bot ...'})
     const __filename = fileURLToPath(import.meta.url)
     const __dirname = path.dirname(__filename)
@@ -23,6 +24,6 @@ export const execute = async interaction => {
 
     spawn(scriptPath, { shell: true, stdio: 'inherit' })
     
-    setTimeout(() => process.exit(0), 50000)
+    setTimeout(() => process.exit(0), 500000)
     
 }
