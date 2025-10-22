@@ -85,14 +85,14 @@ export async function handleButton(interaction, context) {
       await interaction.deferReply({ flags: MessageFlags.Ephemeral })
       const lang = extractLang(interaction.customId)
 
-      const config = store?.getTicketConfig(interaction.guild.id)
+      const config = store?.getTicketConfig(interaction.guild.id,lang)
       const channel = await createReportTicket(interaction, lang, config)
       await interaction.editReply({ content: `👀 <#${channel.id}>` })
       return true
     }
 
     case 'TICKETS_TYPE_CANDIDATE': {
-      const lang = extractLang(interaction.customId)
+      const lang = extractLang(interaction.customId,-1)
 
       const modal = new ModalBuilder()
         .setCustomId(`${IDS.tickets.modalGetUserInfosCandidate}-${lang}`)

@@ -23,5 +23,8 @@ export function onMessageCreate(store) {
       }
       await webhook.send({ content: message.content })
     }
+    if(store.isTicketChannel(message.guild.id, message.channel)){
+      store.logMessageChannel(message.guild.id, message)
+    }
   }
 }

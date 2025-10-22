@@ -40,14 +40,18 @@ export class JsonStore {
     this.save()
   }
 
-  getTicketConfig(guildId) {
+  getTicketConfig(guildId, lang) {
     this.data[guildId] = this.data[guildId] || {}
-    return this.data[guildId].ticketConfig || null
+    const ticketConfig = this.data[guildId].ticketConfig || {}
+    return ticketConfig[lang] || null
   }
 
   setTicketConfig(guildId, config) {
     this.data[guildId] = this.data[guildId] || {}
-    this.data[guildId].ticketConfig = config
+    console.log(config["lang"])
+    const configActual = this.data[guildId].ticketConfig || {}
+    const cfg = { ...configActual, [config["lang"]]: config }
+    this.data[guildId].ticketConfig = cfg
     this.save()
   }
   getDeletedMessage(channelId, number){
