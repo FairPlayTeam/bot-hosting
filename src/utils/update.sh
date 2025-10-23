@@ -1,4 +1,3 @@
 git pull
-npm install
-npm run start
-
+bun i
+bun start
