@@ -7,7 +7,7 @@
     "start": "bun index.js",
     "dev": "bun --watch index.js"
   },
-  "author": "SoNaCl and Poulpe Glacé",
+  "author": "SoNaCl, Poulpe Glacé and Greg",
   "license": "MIT",
   "dependencies": {
     "@discordjs/rest": "^2.4.0",
