@@ -48,9 +48,9 @@
       "remunerated_placeholder": "Yes"
     },
     "new": {
-      "help": "### Welcome to your new ticket <@{userId}>! <:Pepega:1400572073881112666>\nTicket type: `help`\n**__Please describe your problem in detail and the team will respond in time.__**",
-      "candidate": "### Welcome to your new ticket <@{userId}>! <:Pepega:1400572073881112666>\nTicket type: `candidate`\nTicket language: `English`\nAge: `{age}`\nPosition: `{position}`\nDetails: ```{detail}```\nQualities/defects: ```{qualities}```\nWants to be remunerated: `{remunerated}`",
-      "report": "### Welcome to your new ticket <@${userId}>! <:Pepega:1400572073881112666>\nTicket type: `bug report`\n**__Please describe the issue in detail. Thank you for your contribution!__**"
+      "help": "### Welcome to your new ticket <@{userId}>! <:Pepega:1400572073881112666>\nTicket type: `help`\n**__Please describe your problem in detail and the team will respond in time.__**\n\n⚠️ Messages are logged by the bot. When you delete a message, it is also removed from our logs. But, our bot cannot delete messages that do not contain any text.⚠️",
+      "candidate": "### Welcome to your new ticket <@{userId}>! <:Pepega:1400572073881112666>\nTicket type: `candidate`\nTicket language: `English`\nAge: `{age}`\nPosition: `{position}`\nDetails: ```{detail}```\nQualities/defects: ```{qualities}```\nWants to be remunerated: `{remunerated}`\n⚠️ Messages are logged by the bot. When you delete a message, it is also removed from our logs. But, our bot cannot delete messages that do not contain any text.⚠️",
+      "report": "### Welcome to your new ticket <@${userId}>! <:Pepega:1400572073881112666>\nTicket type: `bug report`\n**__Please describe the issue in detail. Thank you for your contribution!__**\n\n⚠️ Messages are logged by the bot. When you delete a message, it is also removed from our logs. But, our bot cannot delete messages that do not contain any text.⚠️"
     },
     "buttons": {
       "close": "Close",

@@ -3,3 +3,6 @@ bun.lock
 node_modules
 data.json
 package-lock.json
+logfiles
+package-lock.json
+package-lock.json

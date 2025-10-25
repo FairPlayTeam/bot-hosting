@@ -18,6 +18,7 @@ import {
   handleConfigStep2,
   handleConfigStep3,
 } from '../tickets/interactions/config.js'
+import fs from 'fs'
 
 function getButtonType(customId) {
   if (customId.startsWith(IDS.tickets.langPrefix)) return 'TICKETS_LANG'
@@ -192,7 +193,19 @@ export async function handleButton(interaction, context) {
       const lang = extractLang(interaction.customId, -1)
 
       await interaction.editReply({ content: t(lang, 'tickets.close.soon') })
-      await interaction.channel.delete()
+      //await interaction.channel.delete()
+      const logs=store.getLogs(interaction.guild.id,interaction.channel.id)
+      //console.log(logs)
+      //const logfile = new JsonStore('data.json')
+    
+      const dir = "./logfiles";
+      const path=`./${dir}/${interaction.channel.id}.json`
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+
+      fs.writeFileSync(path, JSON.stringify(logs, null, 2))
+      store.deleteLogsChannel(interaction.guild.id,interaction.channel.id)
       return true
     }
 

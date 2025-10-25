@@ -54,7 +54,7 @@ export class JsonStore {
     this.data[guildId].ticketConfig = cfg
     this.save()
   }
-    isTicketChannel(guildId, channel) {
+  isTicketChannel(guildId, channel) {
     const configs =  this.data[guildId].ticketConfig || {}
   
     for (const config of Object.values(configs)) {
@@ -66,19 +66,66 @@ export class JsonStore {
     return false
   }
   logMessageChannel(guildId, message) {
-    this.data[guildId] = this.data[guildId] || {}
+    if (message.content==="" && message.attachments?.size===0)return
+    let attachementUrls=""
+    if (message.attachments?.size>0) {attachementUrls=`\n[Attachments]\n${message.attachments.map(a => a.url).join("\n")}`}
+
     const channelId = message.channel.id
+    this.data[guildId] = this.data[guildId] || {}
     this.data[guildId].logChannel = this.data[guildId].logChannel || {}
     this.data[guildId].logChannel[channelId] = this.data[guildId].logChannel[channelId] || []
+    const content = `${message.content}${attachementUrls}`
     const entry = {
       author: message.author.tag,
-      content: message.content,
+      content: content,
       avatar: message.author.displayAvatarURL({ extension: 'png', size: 128 }),
       time: new Date().toLocaleTimeString(),
     }
     this.data[guildId].logChannel[channelId].push(entry)
     
     this.save()
+  }
+  addLogMessageInChannel(guildId,channelId, author, content,avatar){
+    this.data[guildId] = this.data[guildId] || {}
+    this.data[guildId].logChannel = this.data[guildId].logChannel || {}
+    this.data[guildId].logChannel[channelId] = this.data[guildId].logChannel[channelId] || []
+    const entry = {
+      author: author,
+      content: content,
+      avatar: avatar,
+      time: new Date().toLocaleTimeString(),
+    }
+    this.data[guildId].logChannel[channelId].push(entry)
+  }
+  deleteLogMessageChannel(guildId, message){
+    console.log("aa")
+    const channelId= message.channel.id
+    let attachementUrls=""
+    if (message.attachments?.size>0) {attachementUrls=`\n[Attachments]\n${message.attachments.map(a => a.url).join("\n")}`}
+    const content = `${message.content}${attachementUrls}`
+    this.data[guildId] = this.data[guildId] || {}
+    this.data[guildId].logChannel = this.data[guildId].logChannel || {}
+    this.data[guildId].logChannel[channelId] = this.data[guildId].logChannel[channelId] || []
+    console.log("fonc")
+    
+    const logs = this.data[guildId].logChannel[channelId] 
+    const index = logs.findIndex(entry => entry.author === message.author && entry.content === content);
+    console.log(content,logs[index])
+    logs.splice(index, 1);
+    this.data[guildId].logChannel[channelId] =logs
+    this.save()
+
+
+  }
+  deleteLogsChannel(guildId,channelId){
+    delete this.data[guildId].logChannel[channelId];
+    this.save()
+  }
+  getLogs(guildId, channelId){
+    this.data[guildId] = this.data[guildId] || {}
+    this.data[guildId].logChannel = this.data[guildId].logChannel || {}
+    this.data[guildId].logChannel[channelId] = this.data[guildId].logChannel[channelId] || []
+    return this.data[guildId].logChannel[channelId]
   }
   getDeletedMessage(guildId, channelId, number){
     this.data[guildId].deletedMessages = this.data[guildId].deletedMessages || {}
