@@ -3,8 +3,11 @@ import {
 	AttachmentBuilder,
 	SlashCommandBuilder,
 	PermissionFlagsBits,
+ MediaGalleryItemBuilder,
+ MediaGalleryBuilder,
+ TextDisplayBuilder,
+ MessageFlags,
 } from 'discord.js'
-import axios from 'axios'
 import { t, getLangFromInteraction } from '../i18n/index.js'
 
 export const data = new SlashCommandBuilder()
@@ -25,7 +28,13 @@ export const execute = async interaction => {
 	} catch {
 		return interaction.editReply({ content: `${t(lang, 'commands.ban.error1')} ${user.tag}. ${t(lang, 'commands.ban.error2')}` });
 	}
-	const imageBuffer = await axios.get('https://raw.githubusercontent.com/mydkong/assets-for-my-website/refs/heads/main/cheh.gif', { responseType: 'arraybuffer' })
-	const attachmentCheh = new AttachmentBuilder(imageBuffer.data, { name: 'cheh.gif' })
-	return interaction.editReply({ content: `<@${user.id}> ${t(lang, 'commands.ban.success')}`, files: [attachmentCheh] });
+	const item = new MediaGalleryItemBuilder().setURL('https://raw.githubusercontent.com/mydkong/assets-for-my-website/refs/heads/main/cheh.gif')
+	const gallery = new MediaGalleryBuilder().addItems(item)
+
+ const text = new TextDisplayBuilder().setContent(`<@${user.id}> ${t(lang, 'commands.ban.success')}`)
+
+	return interaction.editReply({
+  flags: MessageFlags.IsComponentsV2,
+  components: [text, gallery]
+ })
 }
