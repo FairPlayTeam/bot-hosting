@@ -1,0 +1,9 @@
+{
+    "channelId": {
+        "isTicket": true,
+        "processedBy": "USER_ID_WHO_IS_PROCESSING_OR_EMPTY_STRING",
+        "type": "TICKET_TYPE_BETWEEN_HELP_BUG_REPORT_AND_CANDIDATE",
+        "openBy": "USER_ID_WHO_OPEN_THE_TICKET",
+        "messages": []
+    }
+}
