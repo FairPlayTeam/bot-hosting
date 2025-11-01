@@ -70,6 +70,7 @@ export class JsonStore {
   logDeletedMessage(guildId, message) {
     this.data[guildId] = this.data[guildId] || {}
     const channelId = message.channel.id
+    this.data[guildId] = this.data[guildId] || {}
     this.data[guildId].logChannel = this.data[guildId].logChannel || {}
     this.data[guildId].logChannel[channelId] = this.data[guildId].logChannel[channelId] || []
 

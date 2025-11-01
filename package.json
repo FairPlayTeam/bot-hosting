@@ -4,8 +4,10 @@
   "description": "discord bot",
   "main": "index.js",
   "scripts": {
-    "start": "bun index.js",
-    "dev": "bun --watch index.js"
+    "bot": "bun index.js",
+    "dev_bot": "bun --watch index.js",
+    "web":"cd Web && npm run build && npm run start",
+    "dev_web":"cd Web && npm run dev"
   },
   "author": "SoNaCl, Poulpe Glacé and Greg",
   "license": "MIT",
@@ -15,5 +17,8 @@
     "discord.js": "^14.23.2",
     "dotenv": "^17.2.3",
     "marked": "^16.4.0"
-  }
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+}
 }

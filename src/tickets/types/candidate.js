@@ -9,6 +9,7 @@ import {
 } from 'discord.js'
 import { IDS, EMOJIS } from '../../constants.js'
 import { t } from '../../i18n/index.js'
+import { store } from '../../bot.js'
 
 export async function createCandidateTicket(interaction, lang, formData, config) {
   const { age, position, detail, qualities, remunerated } = formData
@@ -51,7 +52,8 @@ export async function createCandidateTicket(interaction, lang, formData, config)
   const container = new ContainerBuilder()
     .addTextDisplayComponents(text)
     .addActionRowComponents(new ActionRowBuilder().addComponents(buttonClose, buttonProcess))
-
+  store.addLogMessageInChannel(interaction.guild.id,channel.id, "FairPlay", content,"https://fairplay.video/favicon.ico")
+  
   await channel.send({ flags: MessageFlags.IsComponentsV2, components: [container] })
 
   if (config?.roleId) {

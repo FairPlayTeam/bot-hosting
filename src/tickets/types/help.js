@@ -9,6 +9,7 @@ import {
 } from 'discord.js'
 import { IDS, EMOJIS } from '../../constants.js'
 import { t } from '../../i18n/index.js'
+import { store } from '../../bot.js'
 
 export async function createHelpTicket(interaction, lang, config) {
   const channelOptions = {
@@ -28,6 +29,7 @@ export async function createHelpTicket(interaction, lang, config) {
   const content = t(lang, 'tickets.new.help', { userId: interaction.user.id })
 
   const text = new TextDisplayBuilder().setContent(content)
+  store.addLogMessageInChannel(interaction.guild.id,channel.id, "FairPlay", content,"https://fairplay.video/favicon.ico")
   const buttonClose = new ButtonBuilder()
     .setCustomId(`${IDS.ticket.close}-${lang}`)
     .setLabel(t(lang, 'tickets.buttons.close'))
@@ -76,7 +78,7 @@ export async function createReportTicket(interaction, lang, config) {
   if (config?.roleId) {
     content = `<@&${config.roleId}>\n\n${content}`
   }
-
+  store.addLogMessageInChannel(interaction.guild.id,channel.id, "FairPlay", content,"https://fairplay.video/favicon.ico")
   const text = new TextDisplayBuilder().setContent(content)
   const buttonClose = new ButtonBuilder()
     .setCustomId(`${IDS.ticket.close}-${lang}`)
