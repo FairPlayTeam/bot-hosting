@@ -23,7 +23,8 @@
       "by": "Unbanned by",
       "error1": "I couldn't unban",
       "error2": "Certainly an administrator or myself.",
-      "success": "UNBANNED"
+      "success": "UNBANNED",
+      "confirmation": "Are you sure you want to unban <@{userId}>?"
     }
   },
   "tickets": {

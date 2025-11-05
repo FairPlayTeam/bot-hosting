@@ -23,7 +23,8 @@
       "by": "Débanni par",
       "error1": "Je n'ai pas pu débannir",
       "error2": "Sûrement un administrateur ou moi même.",
-      "success": "DEBANNI"
+      "success": "DEBANNI",
+      "confirmation": "Êtes-vous sûr de vouloir débannir <@{userId}>?"
     }
   },
   "tickets": {

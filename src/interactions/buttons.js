@@ -10,7 +10,7 @@ import {
   TextInputStyle,
 } from 'discord.js'
 import { IDS, EMOJIS } from '../constants.js'
-import { t } from '../i18n/index.js'
+import { t ,getLangFromInteraction} from '../i18n/index.js'
 import { wrapInRow, extractLang } from '../utils/ui.js'
 import { createHelpTicket, createReportTicket } from '../tickets/types/help.js'
 import {
@@ -32,6 +32,8 @@ function getButtonType(customId) {
   if (customId.startsWith(IDS.tickets.configStep1)) return 'CONFIG_STEP1'
   if (customId.startsWith(IDS.tickets.configStep2)) return 'CONFIG_STEP2'
   if (customId.startsWith(IDS.tickets.configStep3)) return 'CONFIG_STEP3'
+  if (customId.startsWith(IDS.unban.no)) return 'UNBAN_NO'
+  if (customId.startsWith(IDS.unban.yes)) return 'UNBAN_YES'
   return null
 }
 
@@ -219,7 +221,24 @@ export async function handleButton(interaction, context) {
     case 'CONFIG_STEP3': {
       return await handleConfigStep3(interaction)
     }
+    
+    case 'UNBAN_NO': {
+      await interaction.deferUpdate()
+      await interaction.message.delete()
+      return true
+    }
 
+    case 'UNBAN_YES': {
+      await interaction.deferReply()
+      const lang=getLangFromInteraction(interaction)
+      await interaction.editReply({ content: t(lang, 'commands.unban.success') })
+      
+      const parts = interaction.customId.split(/[-$]/)
+      const userId = parts[parts.length-1]
+      await interaction.guild.members.unban(userId);
+      await interaction.editReply({ content: t(lang, 'commands.unban.success') })
+      return true
+    }
     default:
       return false
   }
