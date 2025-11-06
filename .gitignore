@@ -3,6 +3,8 @@ bun.lock
 node_modules
 data.json
 package-lock.json
+logfiles
+
 Web/.next/
 
-logfiles
+

@@ -8,9 +8,11 @@ import {
   TextDisplayBuilder,
   TextInputBuilder,
   TextInputStyle,
+  MediaGalleryItemBuilder,
+  MediaGalleryBuilder
 } from 'discord.js'
 import { IDS, EMOJIS } from '../constants.js'
-import { t } from '../i18n/index.js'
+import { t ,getLangFromInteraction} from '../i18n/index.js'
 import { wrapInRow, extractLang } from '../utils/ui.js'
 import { createHelpTicket, createReportTicket } from '../tickets/types/help.js'
 import {
@@ -18,6 +20,7 @@ import {
   handleConfigStep2,
   handleConfigStep3,
 } from '../tickets/interactions/config.js'
+import fs from 'fs'
 
 function getButtonType(customId) {
   if (customId.startsWith(IDS.tickets.langPrefix)) return 'TICKETS_LANG'
@@ -31,6 +34,10 @@ function getButtonType(customId) {
   if (customId.startsWith(IDS.tickets.configStep1)) return 'CONFIG_STEP1'
   if (customId.startsWith(IDS.tickets.configStep2)) return 'CONFIG_STEP2'
   if (customId.startsWith(IDS.tickets.configStep3)) return 'CONFIG_STEP3'
+  if (customId.startsWith(IDS.unban.no)) return 'UNBAN_NO'
+  if (customId.startsWith(IDS.unban.yes)) return 'UNBAN_YES'
+  if (customId.startsWith(IDS.ban.no)) return 'BAN_NO'
+  if (customId.startsWith(IDS.ban.yes)) return 'BAN_YES'
   return null
 }
 
@@ -193,6 +200,17 @@ export async function handleButton(interaction, context) {
 
       await interaction.editReply({ content: t(lang, 'tickets.close.soon') })
       await interaction.channel.delete()
+      const logs=store.getLogs(interaction.guild.id,interaction.channel.id)
+      
+    
+      const dir = "./logfiles";
+      const path=`./${dir}/${interaction.channel.id}.json`
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+
+      fs.writeFileSync(path, JSON.stringify(logs, null, 2))
+      store.deleteLogsChannel(interaction.guild.id,interaction.channel.id)
       return true
     }
 
@@ -207,7 +225,48 @@ export async function handleButton(interaction, context) {
     case 'CONFIG_STEP3': {
       return await handleConfigStep3(interaction)
     }
+    
+    case 'UNBAN_NO': {
+      await interaction.deferUpdate()
+      await interaction.message.delete()
+      return true
+    }
 
+    case 'UNBAN_YES': {
+      await interaction.deferReply()
+      const lang=getLangFromInteraction(interaction)
+      const parts = interaction.customId.split(/[-$]/)
+      const userId = parts[parts.length-1]
+      await interaction.guild.members.unban(userId);
+      await interaction.editReply({ content: t(lang, 'commands.unban.success', {userId}) })
+      return true
+    }
+    case 'BAN_NO': {
+      await interaction.deferUpdate()
+      await interaction.message.delete()
+      return true
+    }
+
+    case 'BAN_YES': {
+      await interaction.deferReply()
+      const lang=getLangFromInteraction(interaction)
+      const parts = interaction.customId.split(/[-$]/)
+      const userId = parts[parts.length-1]
+      try {
+        await interaction.guild.members.ban(userId, { reason: `${t(lang, 'commands.ban.by')} ${interaction.user.globalname || interaction.user.username}` });
+      } catch {
+        return interaction.editReply({ content: `${t(lang, 'commands.ban.error1')} <@${userId}>. ${t(lang, 'commands.ban.error2')}` });
+      }
+      const item = new MediaGalleryItemBuilder().setURL('https://raw.githubusercontent.com/mydkong/assets-for-my-website/refs/heads/main/cheh.gif')
+      const gallery = new MediaGalleryBuilder().addItems(item)
+
+    const text = new TextDisplayBuilder().setContent(`<@${userId}> ${t(lang, 'commands.ban.success')}`)
+
+      return interaction.editReply({
+      flags: MessageFlags.IsComponentsV2,
+      components: [text, gallery]
+    })
+    }
     default:
       return false
   }

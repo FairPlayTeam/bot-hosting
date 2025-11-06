@@ -17,13 +17,18 @@
       "by": "Banni par",
       "error1": "Je n'ai pas pu bannir",
       "error2": "Sûrement un administrateur ou moi même.",
-      "success": "BANNI"
+      "success": "BANNI",
+      "confirmation": "Êtes-vous sûr de vouloir bannir <@{userId}>?"
     },
     "unban": {
       "by": "Débanni par",
       "error1": "Je n'ai pas pu débannir",
       "error2": "Sûrement un administrateur ou moi même.",
-      "success": "DEBANNI"
+      "success": "<@{userId}> à été débanni",
+      "confirmation": "Êtes-vous sûr de vouloir débannir <@{userId}>?",
+      "select_placeholder": "Sélectionnez un utilisateur banni...",
+      "select_title" : "Séléctionnez l'utilisateur banni que vous voulez débannir",
+      "noUsers" : "Aucun utilisateur n'a été banni de ce serveur"
     }
   },
   "tickets": {
@@ -48,9 +53,9 @@
       "remunerated_placeholder": "Oui"
     },
     "new": {
-      "help": "### Bienvenue dans votre nouveau ticket <@{userId}>! <:Pepega:1400572073881112666>\nType de ticket : `aide`\n**__Veuillez décrire votre problème en détail et l'équipe vous répondra dans les temps.__**",
-      "candidate": "### Bienvenue dans votre nouveau ticket <@{userId}>! <:Pepega:1400572073881112666>\nType de ticket : `postuler`\nLangue du ticket : `Français`\nÂge : `{age}`\nPoste désiré : `{position}`\nDétails : ```{detail}```\nQualités/défauts : ```{qualities}```\nVeut être rémunéré ? : `{remunerated}`",
-      "report": "### Bienvenue dans votre nouveau ticket <@{userId}>! <:Pepega:1400572073881112666>\nType de ticket : `rapport de bug`\n**__Veuillez décrire le problème en détail. Merci de votre contribution**"
+      "help": "### Bienvenue dans votre nouveau ticket <@{userId}>! <:Pepega:1400572073881112666>\nType de ticket : `aide`\n**__Veuillez décrire votre problème en détail et l'équipe vous répondra dans les temps.__** \n\n⚠️Les messages sont enregistrés par le bot. Lorsque vous supprimez un message, il est aussi supprimé de nos enregistrement. Mais, notre bot ne peut pas supprimer les mesages ne contenant pas de texte⚠️",
+      "candidate": "### Bienvenue dans votre nouveau ticket <@{userId}>! <:Pepega:1400572073881112666>\nType de ticket : `postuler`\nLangue du ticket : `Français`\nÂge : `{age}`\nPoste désiré : `{position}`\nDétails : ```{detail}```\nQualités/défauts : ```{qualities}```\nVeut être rémunéré ? : `{remunerated}`\n⚠️Les messages sont enregistrés par le bot. Lorsque vous supprimez un message, il est aussi supprimé de nos enregistrement. Mais, notre bot ne peut pas supprimer les mesages ne contenant pas de texte⚠️",
+      "report": "### Bienvenue dans votre nouveau ticket <@{userId}>! <:Pepega:1400572073881112666>\nType de ticket : `rapport de bug`\n**__Veuillez décrire le problème en détail. Merci de votre contribution**\n\n⚠️⚠️Les messages sont enregistrés par le bot. Lorsque vous supprimez un message, il est aussi supprimé de nos enregistrement. Mais, notre bot ne peut pas supprimer les mesages ne contenant pas de texte⚠️"
     },
     "buttons": {
       "close": "Fermer",

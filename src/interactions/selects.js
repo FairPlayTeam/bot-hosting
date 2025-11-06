@@ -4,9 +4,11 @@ import {
   MessageFlags,
   StringSelectMenuBuilder,
   TextDisplayBuilder,
+  ButtonBuilder,
+  ButtonStyle
 } from 'discord.js'
 import { IDS, EMOJIS } from '../constants.js'
-import { t } from '../i18n/index.js'
+import { t ,getLangFromInteraction} from '../i18n/index.js'
 
 export async function handleSelect(interaction, context) {
   const { store } = context || {}
@@ -66,6 +68,24 @@ export async function handleSelect(interaction, context) {
     const container = new ContainerBuilder().addTextDisplayComponents(text)
 
     await interaction.editReply({ flags: MessageFlags.IsComponentsV2, components: [container] })
+    return true
+  }
+  if (interaction.customId.startsWith(IDS.select.banned_users)) {
+    const lang=getLangFromInteraction(interaction)
+    const userId=interaction.values[0]
+    const buttonYes = new ButtonBuilder()
+      .setCustomId(`${IDS.unban.yes}-${userId}`)
+      .setLabel(t(lang, 'tickets.buttons.yes'))
+      .setStyle(ButtonStyle.Danger)
+    const buttonNo = new ButtonBuilder()
+      .setCustomId(`${IDS.unban.no}-${userId}`)
+      .setLabel(t(lang, 'tickets.buttons.no'))
+      .setStyle(ButtonStyle.Success)
+
+    await interaction.channel.send({
+      content: t(lang, 'commands.unban.confirmation', {userId}),
+      components: [new ActionRowBuilder().addComponents(buttonYes, buttonNo)],
+})
     return true
   }
 

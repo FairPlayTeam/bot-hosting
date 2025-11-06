@@ -1,0 +1,13 @@
+{
+    "messageId": {
+        "author": "MESSAGE_AUTHOR",
+        "content": "MESSAGE_CONTENT",
+        "avatar": "AUTHOR_AVATAR",
+        "time": "WHEN_THE_MESSAGE_IS_SENDED",
+        "bot": "IF_THE_USER_IS_A_BOT_OR_NOT",
+        "images": [
+            "https://fairplay.video/any.jpeg",
+            "https://discord.com/assets/any.webp"
+        ]
+    }
+}

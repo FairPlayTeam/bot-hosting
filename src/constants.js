@@ -17,7 +17,7 @@ export const EMOJIS = {
   PEPE_SAYING_HI: '<a:pepesalute:1430153526771716176>',
 }
 
-export const IDS = {
+export const  IDS = {
   tickets: {
     langPrefix: 'tickets_lang',
     typePrefix: 'tickets_type',
@@ -37,6 +37,17 @@ export const IDS = {
     yesClose: 'ticket_yes-close',
     noClose: 'ticket_no-close',
   },
+  select:{
+    banned_users:'select_banned_users'
+  },
+  unban :{
+    yes:"unban_yes",
+    no:"unban_no"
+  },
+  ban :{
+    yes:"ban_yes",
+    no:"ban_no"
+  }
 }
 
 export const CHANNELS = {

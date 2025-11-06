@@ -1,11 +1,12 @@
 import {
-	Events,
-	AttachmentBuilder,
 	SlashCommandBuilder,
 	PermissionFlagsBits,
+	ButtonBuilder,
+	ButtonStyle,
+	ActionRowBuilder
 } from 'discord.js'
-import axios from 'axios'
 import { t, getLangFromInteraction } from '../i18n/index.js'
+import { IDS } from '../constants.js'
 
 export const data = new SlashCommandBuilder()
   .setName('ban')
@@ -19,13 +20,20 @@ export const data = new SlashCommandBuilder()
 export const execute = async interaction => {
 	await interaction.deferReply()
 	const user = interaction.options.getUser('user')
-	const lang = getLangFromInteraction(interaction)
-	try {
-		await interaction.guild.members.ban(user.id, { reason: `${t(lang, 'commands.ban.by')} ${interaction.user.globalname || interaction.user.username}` });
-	} catch {
-		return interaction.editReply({ content: `${t(lang, 'commands.ban.error1')} ${user.tag}. ${t(lang, 'commands.ban.error2')}` });
-	}
-	const imageBuffer = await axios.get('https://raw.githubusercontent.com/mydkong/assets-for-my-website/refs/heads/main/cheh.gif', { responseType: 'arraybuffer' })
-	const attachmentCheh = new AttachmentBuilder(imageBuffer.data, { name: 'cheh.gif' })
-	return interaction.editReply({ content: `<@${user.id}> ${t(lang, 'commands.ban.success')}`, files: [attachmentCheh] });
+	const lang=getLangFromInteraction(interaction)
+	const userId=user.id
+	const buttonYes = new ButtonBuilder()
+		.setCustomId(`${IDS.ban.yes}-${userId}`)
+		.setLabel(t(lang, 'tickets.buttons.yes'))
+		.setStyle(ButtonStyle.Danger)
+	const buttonNo = new ButtonBuilder()
+		.setCustomId(`${IDS.ban.no}-${userId}`)
+		.setLabel(t(lang, 'tickets.buttons.no'))
+		.setStyle(ButtonStyle.Success)
+
+	await interaction.channel.send({
+		content: t(lang, 'commands.ban.confirmation', {userId}),
+		components: [new ActionRowBuilder().addComponents(buttonYes, buttonNo)],
+})
+	
 }
