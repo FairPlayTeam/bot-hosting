@@ -17,14 +17,18 @@
       "by": "Banni par",
       "error1": "Je n'ai pas pu bannir",
       "error2": "Sûrement un administrateur ou moi même.",
-      "success": "BANNI"
+      "success": "BANNI",
+      "confirmation": "Êtes-vous sûr de vouloir bannir <@{userId}>?"
     },
     "unban": {
       "by": "Débanni par",
       "error1": "Je n'ai pas pu débannir",
       "error2": "Sûrement un administrateur ou moi même.",
-      "success": "DEBANNI",
-      "confirmation": "Êtes-vous sûr de vouloir débannir <@{userId}>?"
+      "success": "<@{userId}> à été débanni",
+      "confirmation": "Êtes-vous sûr de vouloir débannir <@{userId}>?",
+      "select_placeholder": "Sélectionnez un utilisateur banni...",
+      "select_title" : "Séléctionnez l'utilisateur banni que vous voulez débannir",
+      "noUsers" : "Aucun utilisateur n'a été banni de ce serveur"
     }
   },
   "tickets": {

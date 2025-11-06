@@ -17,17 +17,17 @@ import { t, getLangFromInteraction } from '../i18n/index.js'
 export const data = new SlashCommandBuilder()
   .setName('unban')
   .setDescription('Unban a user')
-  /*.addUserOption(option => option.setName('user')
-                                 .setDescription('The user to unban')
-								 .setRequired(true)
-  )*/
   .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 
 export const execute = async interaction => {
 	await interaction.deferReply()
-	const user = interaction.options.getUser('user')
 	const lang = getLangFromInteraction(interaction)
 	const bannedUsers= await interaction.guild.bans.fetch()
+	
+	if (bannedUsers.size === 0) {
+		await interaction.editReply({content : t(lang, 'commands.unban.noUsers')})
+		return true
+	}
 
 
 	const options = bannedUsers.map(ban => {
@@ -40,15 +40,8 @@ export const execute = async interaction => {
 	
 	const select = new StringSelectMenuBuilder()
 		  .setCustomId(IDS.select.banned_users)
-		  .setPlaceholder('Sélectionne un utilisateur banni...')
+		  .setPlaceholder(t(lang, 'commands.unban.select_placeholder'))
 		  .addOptions(options);
 	const selectorComponent = new ActionRowBuilder().addComponents(select);
-	await interaction.editReply({ content: "Liste des users ban", components: [selectorComponent] });
-	/*
-	try {
-		await interaction.guild.members.unban(user.id);
-	} catch {
-		return interaction.editReply({ content: `${t(lang, 'commands.unban.error1')} ${user.tag}. ${t(lang, 'commands.unban.error2')}` });
-	}
-	return interaction.editReply({ content: `<@${user.id}> ${t(lang, 'commands.unban.success')}`});*/
+	await interaction.editReply({ content: t(lang, 'commands.unban.select_title'), components: [selectorComponent] });
 }

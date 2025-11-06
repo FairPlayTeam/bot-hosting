@@ -71,28 +71,22 @@ export async function handleSelect(interaction, context) {
     return true
   }
   if (interaction.customId.startsWith(IDS.select.banned_users)) {
-    console.log(interaction.values[0])
     const lang=getLangFromInteraction(interaction)
     const userId=interaction.values[0]
-    const banInfo = await interaction.guild.bans.fetch(userId);
-    const user = banInfo.user;
-    //await interaction.channel.send(t(lang, 'commands.unban.confirmation', {userId}))
-      //const lang = extractLang(interaction.customId)
+    const buttonYes = new ButtonBuilder()
+      .setCustomId(`${IDS.unban.yes}-${userId}`)
+      .setLabel(t(lang, 'tickets.buttons.yes'))
+      .setStyle(ButtonStyle.Danger)
+    const buttonNo = new ButtonBuilder()
+      .setCustomId(`${IDS.unban.no}-${userId}`)
+      .setLabel(t(lang, 'tickets.buttons.no'))
+      .setStyle(ButtonStyle.Success)
 
-      const buttonYes = new ButtonBuilder()
-        .setCustomId(`${IDS.unban.yes}-${userId}`)
-        .setLabel(t(lang, 'tickets.buttons.yes'))
-        .setStyle(ButtonStyle.Danger)
-      const buttonNo = new ButtonBuilder()
-        .setCustomId(`${IDS.unban.no}-${userId}`)
-        .setLabel(t(lang, 'tickets.buttons.no'))
-        .setStyle(ButtonStyle.Success)
-
-      await interaction.channel.send({
-        content: t(lang, 'commands.unban.confirmation', {userId}),
-        components: [new ActionRowBuilder().addComponents(buttonYes, buttonNo)],
-  })
-      return true
+    await interaction.channel.send({
+      content: t(lang, 'commands.unban.confirmation', {userId}),
+      components: [new ActionRowBuilder().addComponents(buttonYes, buttonNo)],
+})
+    return true
   }
 
   return false

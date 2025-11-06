@@ -50,7 +50,6 @@ export class JsonStore {
 
   setTicketConfig(guildId, config) {
     this.data[guildId] = this.data[guildId] || {}
-    console.log(config["lang"])
     const configActual = this.data[guildId].ticketConfig || {}
     const cfg = { ...configActual, [config["lang"]]: config }
     this.data[guildId].ticketConfig = cfg

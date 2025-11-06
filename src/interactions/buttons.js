@@ -8,6 +8,8 @@ import {
   TextDisplayBuilder,
   TextInputBuilder,
   TextInputStyle,
+  MediaGalleryItemBuilder,
+  MediaGalleryBuilder
 } from 'discord.js'
 import { IDS, EMOJIS } from '../constants.js'
 import { t ,getLangFromInteraction} from '../i18n/index.js'
@@ -34,6 +36,8 @@ function getButtonType(customId) {
   if (customId.startsWith(IDS.tickets.configStep3)) return 'CONFIG_STEP3'
   if (customId.startsWith(IDS.unban.no)) return 'UNBAN_NO'
   if (customId.startsWith(IDS.unban.yes)) return 'UNBAN_YES'
+  if (customId.startsWith(IDS.ban.no)) return 'BAN_NO'
+  if (customId.startsWith(IDS.ban.yes)) return 'BAN_YES'
   return null
 }
 
@@ -231,13 +235,37 @@ export async function handleButton(interaction, context) {
     case 'UNBAN_YES': {
       await interaction.deferReply()
       const lang=getLangFromInteraction(interaction)
-      await interaction.editReply({ content: t(lang, 'commands.unban.success') })
-      
       const parts = interaction.customId.split(/[-$]/)
       const userId = parts[parts.length-1]
       await interaction.guild.members.unban(userId);
-      await interaction.editReply({ content: t(lang, 'commands.unban.success') })
+      await interaction.editReply({ content: t(lang, 'commands.unban.success', {userId}) })
       return true
+    }
+    case 'BAN_NO': {
+      await interaction.deferUpdate()
+      await interaction.message.delete()
+      return true
+    }
+
+    case 'BAN_YES': {
+      await interaction.deferReply()
+      const lang=getLangFromInteraction(interaction)
+      const parts = interaction.customId.split(/[-$]/)
+      const userId = parts[parts.length-1]
+      try {
+        await interaction.guild.members.ban(userId, { reason: `${t(lang, 'commands.ban.by')} ${interaction.user.globalname || interaction.user.username}` });
+      } catch {
+        return interaction.editReply({ content: `${t(lang, 'commands.ban.error1')} <@${userId}>. ${t(lang, 'commands.ban.error2')}` });
+      }
+      const item = new MediaGalleryItemBuilder().setURL('https://raw.githubusercontent.com/mydkong/assets-for-my-website/refs/heads/main/cheh.gif')
+      const gallery = new MediaGalleryBuilder().addItems(item)
+
+    const text = new TextDisplayBuilder().setContent(`<@${userId}> ${t(lang, 'commands.ban.success')}`)
+
+      return interaction.editReply({
+      flags: MessageFlags.IsComponentsV2,
+      components: [text, gallery]
+    })
     }
     default:
       return false

@@ -43,6 +43,10 @@ export const  IDS = {
   unban :{
     yes:"unban_yes",
     no:"unban_no"
+  },
+  ban :{
+    yes:"ban_yes",
+    no:"ban_no"
   }
 }
 
