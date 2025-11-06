@@ -1,3 +1,4 @@
 git pull
 bun i
-bun start
+bun bot
+bun web

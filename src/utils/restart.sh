@@ -1,1 +1,2 @@
-bun start
+bun bot
+bun web
