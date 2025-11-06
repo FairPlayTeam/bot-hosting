@@ -143,4 +143,21 @@ export class JsonStore {
     }
     this.save()
   }
+  getAutoReply(guildId){
+    this.data[guildId]=this.data[guildId] || {}
+    this.data[guildId].autoreply=this.data[guildId].autoreply ||{}
+    return this.data[guildId].autoreply
+  }
+  addAutoReply(guildId, word, messageContent){
+    this.data[guildId]=this.data[guildId] || {}
+    this.data[guildId].autoreply=this.data[guildId].autoreply ||{}
+    this.data[guildId].autoreply[word] = messageContent.toLowerCase()
+    return this.save()
+  }
+  deleteAutoReply(guildId, word){
+    this.data[guildId]=this.data[guildId] || {}
+    this.data[guildId].autoreply=this.data[guildId].autoreply ||{}
+    delete this.data[guildId].autoreply[word]
+    return true
+  }
 }
