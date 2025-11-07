@@ -151,13 +151,13 @@ export class JsonStore {
   addAutoReply(guildId, word, messageContent){
     this.data[guildId]=this.data[guildId] || {}
     this.data[guildId].autoreply=this.data[guildId].autoreply ||{}
-    this.data[guildId].autoreply[word] = messageContent.toLowerCase()
+    this.data[guildId].autoreply[word.toLowerCase()] = messageContent
     return this.save()
   }
   deleteAutoReply(guildId, word){
     this.data[guildId]=this.data[guildId] || {}
     this.data[guildId].autoreply=this.data[guildId].autoreply ||{}
     delete this.data[guildId].autoreply[word]
-    return true
+    return this.save()
   }
 }

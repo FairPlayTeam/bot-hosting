@@ -39,7 +39,9 @@ export function onMessageCreate(store) {
     if (isWordIn && !message.author.bot){
       const words = text.match(regex);
       for (const word of words){
-        await message.channel.send({content : dico[word]})
+        if(word){
+          await message.channel.send({content : dico[word]})
+        }
       }
     }
 
