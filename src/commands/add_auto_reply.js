@@ -1,9 +1,19 @@
 import {
 	SlashCommandBuilder,
 	PermissionFlagsBits,
-    MessageFlags,
+	MessageFlags,
 } from 'discord.js'
 import { store } from '../bot.js'
+
+// sanitize
+function sanitizeInput(input) {
+	return input
+		.replace(/@everyone/gi, '[everyone]')
+		.replace(/@here/gi, '[here]')
+		.replace(/<@!?(\d+)>/g, '[user]')
+		.replace(/<@&(\d+)>/g, '[role]')
+		.trim()
+}
 
 export const data = new SlashCommandBuilder()
   .setName('add_an_auto-reply')
@@ -16,14 +26,16 @@ export const data = new SlashCommandBuilder()
                                  .setDescription('The message to send')
 								 .setRequired(true)
   )
+  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 
 export const execute = async interaction => {
-    await interaction.deferReply()
-    const word = interaction.options.getString("word")
-    const message = interaction.options.getString('message')
-    store.addAutoReply(interaction.guild.id,word, message )
-    await interaction.editReply({ content : "Successfully added !" })
-    
-    
-    return
+	await interaction.deferReply({ flags: MessageFlags.Ephemeral })
+	const rawWord = interaction.options.getString('word')
+	const rawMessage = interaction.options.getString('message')
+
+	const word = sanitizeInput(rawWord)
+	const message = sanitizeInput(rawMessage)
+
+	store.addAutoReply(interaction.guild.id, word, message)
+	await interaction.editReply({ content: 'Successfully added!' })
 }
