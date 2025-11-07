@@ -1,2 +1,4 @@
 bun bot
-bun web
+cd ./Web/ 
+bun build
+bun start

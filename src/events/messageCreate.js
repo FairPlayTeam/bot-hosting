@@ -1,3 +1,5 @@
+import { SlashCommandSubcommandGroupBuilder } from "discord.js"
+
 export function onMessageCreate(store) {
   return async function (message) {
     if ((store.data[message.guild.id] || {})[message.author.id]?.vanished) {
@@ -26,5 +28,24 @@ export function onMessageCreate(store) {
     if(store.isTicketChannel(message.guild.id, message.channel)){
       store.logMessageChannel(message.guild.id, message)
     }
+
+
+    
+    const dico = store.getAutoReply(message.guild.id);
+    const searchList =  Object.keys(dico);
+    const text=message.content.toLowerCase()
+    const regex = new RegExp(`\\b(${searchList.join("|")})\\b`, "gi");
+    const isWordIn = regex.test(text);
+    if (isWordIn && !message.author.bot){
+      const words = text.match(regex);
+      for (const word of words){
+        if(word){
+          await message.channel.send({content : dico[word]})
+        }
+      }
+    }
+
+
+
   }
 }
