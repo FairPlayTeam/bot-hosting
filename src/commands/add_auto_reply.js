@@ -16,6 +16,7 @@ export const data = new SlashCommandBuilder()
                                  .setDescription('The message to send')
 								 .setRequired(true)
   )
+  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 
 export const execute = async interaction => {
     await interaction.deferReply()

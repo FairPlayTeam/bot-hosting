@@ -12,7 +12,7 @@ export const data = new SlashCommandBuilder()
                                  .setDescription('The word to be detected')
 								 .setRequired(true)
   )
- 
+ .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 
 export const execute = async interaction => {
     await interaction.deferReply()
