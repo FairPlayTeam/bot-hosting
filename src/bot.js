@@ -21,6 +21,7 @@ import * as snipe from './commands/snipe.js'
 import * as unban from './commands/unban.js'
 import * as addAutoReply from './commands/add_auto_reply.js'
 import * as deleteAutoReply from './commands/delete_auto_reply.js'
+import * as showAutoReply from './commands/show_auto_reply.js'
 
 
 import { routeInteraction } from './interactions/router.js'
@@ -48,7 +49,7 @@ const client = new Client({
 
 export const store = new JsonStore('data.json')
 
-const commandModules = [vanish, ticketsShow, ticketsConfig, ban, say, update, restart, snipe, unban, addAutoReply, deleteAutoReply]
+const commandModules = [vanish, ticketsShow, ticketsConfig, ban, say, update, restart, snipe, unban, addAutoReply, deleteAutoReply, showAutoReply]
 const commands = commandModules.map(c => c.data.toJSON())
 
 const rest = new REST({ version: '10' }).setToken(token)
