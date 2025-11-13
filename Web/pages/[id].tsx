@@ -6,7 +6,7 @@ import styles from "./id.module.css"
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params as { id: string };
-  const path = `./logfiles/${id}.js`;
+  const path = `../../logfiles/${id}.js`;
 
   if (!fs.existsSync(path)) {
     return {
