@@ -1,14 +1,19 @@
-//web/pages/[id].tsx
+
 import { useRouter } from "next/router";
 import fs from 'fs'
 import { GetServerSideProps } from "next";
 import styles from "./id.module.css"
+import path from "path"
+import ReactMarkdown from "react-markdown";
+
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params as { id: string };
-  const path = `../../logfiles/${id}.js`;
+  const dirName = process.cwd()
+  const mainDir=path.resolve(dirName, "..");
+  const logFileName = path.join(mainDir, "logfiles",`${id}.json`)
 
-  if (!fs.existsSync(path)) {
+  if (!fs.existsSync(logFileName)) {
     return {
       props: {
         id,
@@ -17,8 +22,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const data = await fs.promises.readFile(path, "utf8");
-
+  const file = await fs.promises.readFile(logFileName, "utf8");
+  const data= JSON.parse(file)
   return {
     props: {
       id,
@@ -27,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-export default function Page({id,data}:{id:string, data:any}) {
+export default function Page({id,data}:{id:string, data:{content: string; author: string; avatar: string; time: string}[] | null}) {
   const router = useRouter();
   
   if (!id) return <p>Loading...</p>;
@@ -35,7 +40,25 @@ export default function Page({id,data}:{id:string, data:any}) {
 
   return (
     <div className="main">
-      <p>test, id : {id}</p>
+      
+      {data.map((message) => {
+        return (
+          
+        
+          <div className={styles.message}>
+            <img src={message.avatar} alt="avatar" className={styles.messageAvatar}/>
+            <div className={styles.messageText}>
+              <div className={styles.messageHead}>
+                <p className={styles.messageAuthor}>{message.author}</p>
+                <p className={styles.messageTime}>{message.time}</p>
+              </div>
+              
+              <div className={styles.messageContent}> <ReactMarkdown>{message.content || "a"}</ReactMarkdown></div>
+            </div>
+          </div>
+
+        )
+      })}
     </div>
   );
 }

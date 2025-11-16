@@ -199,7 +199,7 @@ export async function handleButton(interaction, context) {
       const lang = extractLang(interaction.customId, -1)
 
       await interaction.editReply({ content: t(lang, 'tickets.close.soon') })
-      await interaction.channel.delete()
+      
       const logs=store.getLogs(interaction.guild.id,interaction.channel.id)
       
     
@@ -211,6 +211,7 @@ export async function handleButton(interaction, context) {
 
       fs.writeFileSync(path, JSON.stringify(logs, null, 2))
       store.deleteLogsChannel(interaction.guild.id,interaction.channel.id)
+      await interaction.channel.delete()
       return true
     }
 

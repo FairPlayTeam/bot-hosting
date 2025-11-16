@@ -27,6 +27,7 @@ export function onMessageCreate(store) {
     }
     if(store.isTicketChannel(message.guild.id, message.channel)){
       store.logMessageChannel(message.guild.id, message)
+      
     }
 
 
