@@ -3,8 +3,9 @@ import fs from 'fs'
 import * as tools from './tools.js'
 
 export class JsonStore {
-  constructor(path = 'data.json') {
+  constructor(path = 'data.json', client) {
     this.path = path
+    this.client = client
     if (!fs.existsSync(this.path)) {
       fs.writeFileSync(this.path, JSON.stringify({}))
     }
@@ -60,7 +61,7 @@ export class JsonStore {
     this.data[guildId].channeConfig = this.data[guildId].channeConfig || {}
     this.data[guildId].channeConfig[channel.id] = this.data[guildId].channeConfig[channel.id]  || {}
 
-    return this.data[guildId].channeConfig[channel.id].isTicket
+    return !!this.data[guildId].channeConfig[channel.id].isTicket
   }
   setTicketChannel(guildId, channel) {
     this.data[guildId] = this.data[guildId] || {}
@@ -70,7 +71,7 @@ export class JsonStore {
     this.save()
     return true
   }
-  logMessageChannel(guildId, message) {
+  async logMessageChannel(guildId, message) {
     if (message.content==="" && message.attachments?.size===0)return
     let attachementUrls=""
     if (message.attachments?.size>0) {attachementUrls=`\n[Attachments]\n${message.attachments.map(a => a.url).join("\n")}`}
@@ -79,7 +80,8 @@ export class JsonStore {
     this.data[guildId] = this.data[guildId] || {}
     this.data[guildId].logChannel = this.data[guildId].logChannel || {}
     this.data[guildId].logChannel[channelId] = this.data[guildId].logChannel[channelId] || []
-    const content = `${message.content}${attachementUrls}`
+    const cleanContent = await cleanMessage(message.content,this.client, message.guild.id)
+    const content = `${cleanContent}${attachementUrls}`
     const entry = {
       author: message.author.tag,
       content: content,
@@ -90,24 +92,26 @@ export class JsonStore {
     
     this.save()
   }
-  addLogMessageInChannel(guildId,channelId, author, content,avatar){
+  async addLogMessageInChannel(guildId,channelId, author, content,avatar){
     this.data[guildId] = this.data[guildId] || {}
     this.data[guildId].logChannel = this.data[guildId].logChannel || {}
     this.data[guildId].logChannel[channelId] = this.data[guildId].logChannel[channelId] || []
+    const cleanContent = await cleanMessage(content,this.client, guildId)
     const entry = {
       author: author,
-      content: content,
+      content: cleanContent,
       avatar: avatar,
       time: new Date().toLocaleTimeString(),
     }
     this.data[guildId].logChannel[channelId].push(entry)
     this.save()
   }
-  deleteLogMessageChannel(guildId, message){
+  async deleteLogMessageChannel(guildId, message){
     const channelId= message.channel.id
     let attachementUrls=""
     if (message.attachments?.size>0) {attachementUrls=`\n[Attachments]\n${message.attachments.map(a => a.url).join("\n")}`}
-    const content = `${message.content}${attachementUrls}`
+    const cleanContent = await cleanMessage(message.content,this.client, message.guild.id)
+    const content = `${cleanContent}${attachementUrls}`
     this.data[guildId] = this.data[guildId] || {}
     this.data[guildId].logChannel = this.data[guildId].logChannel || {}
     this.data[guildId].logChannel[channelId] = this.data[guildId].logChannel[channelId] || []
@@ -167,3 +171,56 @@ export class JsonStore {
     return this.save()
   }
 }
+
+
+
+async function cleanMessage(text, client, guildId) {
+    let content = text;
+    const userIds = [...text.matchAll(/<@!?(\d+)>/g)].map(m => m[1]);
+    const roleIds = [...text.matchAll(/<@&(\d+)>/g)].map(m => m[1]);
+
+
+    const users = {};
+    for (const id of userIds) {
+        try {
+            const user = await client.users.fetch(id);
+            users[id] = user.username;
+        } catch {
+            users[id] = null;
+        }
+    }
+
+    const roles = {};
+    try {
+        const guild = await client.guilds.fetch(guildId);
+        for (const id of roleIds) {
+            try {
+                const role = await guild.roles.fetch(id);
+                roles[id] = role?.name || null;
+            } catch {
+                roles[id] = null;
+            }
+        }
+    } catch {
+    }
+
+
+    content = content.replace(/<@!?(\d+)>/g, (match, id) => {
+        return users[id] ? `@${users[id]}` : match;
+    });
+
+    content = content.replace(/<@&(\d+)>/g, (match, id) => {
+        return roles[id] ? `@${roles[id]}` : match;
+    });
+
+    content = content.replace(/<:([a-zA-Z0-9_]+):(\d+)>/g,
+        (match, name, id) => `<img src="https://cdn.discordapp.com/emojis/${id}.png" alt="${name}" class="emoji" style="width:24px;height:24px;vertical-align:middle;display:inline-block;">`
+    );
+
+    content = content.replace(/<a:([a-zA-Z0-9_]+):(\d+)>/g,
+        (match, name, id) => `<img src="https://cdn.discordapp.com/emojis/${id}.gif" alt="${name}" class="emoji" style="width:24px;height:24px;vertical-align:middle;display:inline-block;">`
+    );
+
+    return content;
+}
+

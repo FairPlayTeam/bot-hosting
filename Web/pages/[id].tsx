@@ -5,6 +5,8 @@ import { GetServerSideProps } from "next";
 import styles from "./id.module.css"
 import path from "path"
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import Head from 'next/head';
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -39,11 +41,16 @@ export default function Page({id,data}:{id:string, data:{content: string; author
   if (!data) return <h1 className={styles.bigText}>The logs for this channel are not available</h1>
 
   return (
+    <>
+    <Head>
+        <title>Ticket Logs</title>
+        <meta name="description" content="Logs of one ticket channel closed" />
+      </Head>
+      <main>
     <div className="main">
-      
       {data.map((message) => {
         return (
-          
+          <div className={styles.discussion}>
         
           <div className={styles.message}>
             <img src={message.avatar} alt="avatar" className={styles.messageAvatar}/>
@@ -53,12 +60,15 @@ export default function Page({id,data}:{id:string, data:{content: string; author
                 <p className={styles.messageTime}>{message.time}</p>
               </div>
               
-              <div className={styles.messageContent}> <ReactMarkdown>{message.content || "a"}</ReactMarkdown></div>
+              <div className={styles.messageContent}> <ReactMarkdown rehypePlugins={[rehypeRaw]}>{message.content || "a"}</ReactMarkdown></div>
             </div>
+          </div>
           </div>
 
         )
       })}
     </div>
+    </main>
+    </>
   );
 }
