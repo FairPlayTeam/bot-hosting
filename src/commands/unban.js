@@ -1,17 +1,10 @@
 import {
-	Events,
-	AttachmentBuilder,
 	SlashCommandBuilder,
 	PermissionFlagsBits,
 	StringSelectMenuBuilder,
-	ActionRowBuilder,
-	GatewayIntentBits,
-	Partials,
-	ButtonBuilder,
-	ButtonStyle
+	ActionRowBuilder
 } from 'discord.js'
-import { IDS, EMOJIS } from '../constants.js'
-import axios from 'axios'
+import { IDS } from '../constants.js'
 import { t, getLangFromInteraction } from '../i18n/index.js'
 
 export const data = new SlashCommandBuilder()
@@ -28,7 +21,6 @@ export const execute = async interaction => {
 		await interaction.editReply({content : t(lang, 'commands.unban.noUsers')})
 		return true
 	}
-
 
 	const options = bannedUsers.map(ban => {
           const user = ban.user;

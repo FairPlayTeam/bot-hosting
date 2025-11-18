@@ -4,13 +4,12 @@ import { spawn } from 'child_process'
 import { fileURLToPath } from 'url' 
 import {
 	SlashCommandBuilder,
-	PermissionFlagsBits,
-    
+	PermissionFlagsBits  
 } from 'discord.js'
 
 export const data = new SlashCommandBuilder()
   .setName('restart')
-  .setDescription('Restart the bot (only for admin)')
+  .setDescription('Restart the bot (admin perms required)')
   .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 
 export const execute = async interaction => {
@@ -26,5 +25,4 @@ export const execute = async interaction => {
         spawn('bash', [scriptPath], { stdio: 'inherit' })
     }
     process.exit(0)
-    
 }

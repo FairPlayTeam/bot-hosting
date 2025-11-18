@@ -9,7 +9,6 @@ import {
 } from 'discord.js'
 import { store } from '../bot.js'
 
-
 export const data = new SlashCommandBuilder()
   .setName('snipe')
   .setDescription('Display the last deleted messages')
@@ -26,13 +25,13 @@ export const execute = async interaction => {
 
   if (messages.length === 0) {
     return interaction.reply({
-      content: 'No messages deleted in this room',
+      content: 'No messages deleted in this channel.',
       flags: MessageFlags.Ephemeral,
     })
   }
 
-  const containers = messages.map((m, i) => {
-    const text = new TextDisplayBuilder().setContent(`Message is deleted:\n${m.content || '(no content)'}`)
+  const containers = messages.map(m => {
+    const text = new TextDisplayBuilder().setContent(`Deleted message:\n${m.content || '(no content)'}`)
     const thumbnail = new ThumbnailBuilder().setURL(m.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png')
 
     const section = new SectionBuilder()
@@ -50,11 +49,10 @@ export const execute = async interaction => {
     components: [containers[0]]
   })
 
-  for (let i = 1; i < containers.length-1; i++) {
+  for (let i = 1; i < containers.length; i++) {
     await interaction.channel.send({
       flags: MessageFlags.IsComponentsV2,
-      components: [containers[i+1]]
+      components: [containers[i]]
     })
   }
-
 }

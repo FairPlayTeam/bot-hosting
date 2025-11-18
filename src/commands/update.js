@@ -4,7 +4,6 @@ import { fileURLToPath } from 'url'
 import {
 	SlashCommandBuilder,
 	PermissionFlagsBits,
-    
 } from 'discord.js'
 
 export const data = new SlashCommandBuilder()
@@ -20,10 +19,7 @@ export const execute = async interaction => {
     const __dirname = path.dirname(__filename)
     const scriptPath = path.join(__dirname, '../utils/update.sh')
   
-    
-
     spawn(scriptPath, { shell: true, stdio: 'inherit' })
     
     setTimeout(() => process.exit(0), 5000)
-    
 }

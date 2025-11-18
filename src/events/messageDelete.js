@@ -7,6 +7,5 @@ export function onMessageDelete(store,) {
     if(store.isTicketChannel(message.guild.id, message.channel)){
       await store.deleteLogMessageChannel(message.guild.id,message)
     }
-    
   }
 }

@@ -20,8 +20,8 @@ export const data = new SlashCommandBuilder()
 export const execute = async interaction => {
 	await interaction.deferReply()
 	const user = interaction.options.getUser('user')
-	const lang=getLangFromInteraction(interaction)
-	const userId=user.id
+	const lang = getLangFromInteraction(interaction)
+	const userId = user.id
 	const buttonYes = new ButtonBuilder()
 		.setCustomId(`${IDS.ban.yes}-${userId}`)
 		.setLabel(t(lang, 'tickets.buttons.yes'))
@@ -34,6 +34,5 @@ export const execute = async interaction => {
 	await interaction.channel.send({
 		content: t(lang, 'commands.ban.confirmation', {userId}),
 		components: [new ActionRowBuilder().addComponents(buttonYes, buttonNo)],
-})
-	
+	})
 }

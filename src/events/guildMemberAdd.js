@@ -8,7 +8,6 @@ import {
 } from 'discord.js'
 
 import {
-    LANG,
     EMOJIS,
     CHANNELS
 } from '../constants.js'

@@ -48,16 +48,8 @@ export async function createHelpTicket(interaction, lang, config) {
 
   await channel.send({ flags: MessageFlags.IsComponentsV2, components: [container] })
 
-  if (config?.roleId) {
-    const ghostpingText = `<@&${config.roleId}>`
-    const ghostping = await channel.send(ghostpingText)
-  }
-
   return channel
 }
-
-
-
 
 export async function createReportTicket(interaction, lang, config) {
   const channelOptions = {

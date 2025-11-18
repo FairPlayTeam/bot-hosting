@@ -47,7 +47,6 @@ export async function handleSelect(interaction, context) {
     await interaction.deferUpdate()
 
     const lang = interaction.customId.split('$')[1]
-    const categoryChoice = interaction.customId.split('$')[2]
     const categoryId = interaction.customId.split('$')[3]
     const roleId = interaction.values[0]
 
@@ -85,7 +84,7 @@ export async function handleSelect(interaction, context) {
     await interaction.channel.send({
       content: t(lang, 'commands.unban.confirmation', {userId}),
       components: [new ActionRowBuilder().addComponents(buttonYes, buttonNo)],
-})
+    })
     return true
   }
 

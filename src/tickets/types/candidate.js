@@ -56,10 +56,5 @@ export async function createCandidateTicket(interaction, lang, formData, config)
   
   await channel.send({ flags: MessageFlags.IsComponentsV2, components: [container] })
 
-  if (config?.roleId) {
-    const ghostpingText = `<@&${config.roleId}>`
-    const ghostping = await channel.send(ghostpingText)
-  }
-
   return channel
 }

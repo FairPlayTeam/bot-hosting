@@ -50,7 +50,6 @@ export async function handleButton(interaction, context) {
       await interaction.deferReply({ flags: MessageFlags.Ephemeral })
       const lang = extractLang(interaction.customId,-1)
       
-
       const text = new TextDisplayBuilder().setContent(t(lang, 'tickets.type.menu_title'))
       const helpButton = new ButtonBuilder()
         .setCustomId(`${IDS.tickets.typeHelp}-${lang}`)
@@ -242,6 +241,7 @@ export async function handleButton(interaction, context) {
       await interaction.editReply({ content: t(lang, 'commands.unban.success', {userId}) })
       return true
     }
+    
     case 'BAN_NO': {
       await interaction.deferUpdate()
       await interaction.message.delete()
@@ -261,13 +261,13 @@ export async function handleButton(interaction, context) {
       const item = new MediaGalleryItemBuilder().setURL('https://raw.githubusercontent.com/mydkong/assets-for-my-website/refs/heads/main/cheh.gif')
       const gallery = new MediaGalleryBuilder().addItems(item)
 
-    const text = new TextDisplayBuilder().setContent(`<@${userId}> ${t(lang, 'commands.ban.success')}`)
-
-      return interaction.editReply({
-      flags: MessageFlags.IsComponentsV2,
-      components: [text, gallery]
-    })
+      const text = new TextDisplayBuilder().setContent(`<@${userId}> ${t(lang, 'commands.ban.success')}`)
+        return interaction.editReply({
+        flags: MessageFlags.IsComponentsV2,
+        components: [text, gallery]
+      })
     }
+
     default:
       return false
   }
