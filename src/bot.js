@@ -47,7 +47,7 @@ const client = new Client({
   },
 })
 
-export const store = new JsonStore('data.json')
+export const store = new JsonStore('data.json',client)
 
 const commandModules = [vanish, ticketsShow, ticketsConfig, ban, say, update, restart, snipe, unban, addAutoReply, deleteAutoReply, showAutoReply]
 const commands = commandModules.map(c => c.data.toJSON())

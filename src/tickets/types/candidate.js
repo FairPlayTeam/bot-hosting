@@ -27,7 +27,7 @@ export async function createCandidateTicket(interaction, lang, formData, config)
   }
 
   const channel = await interaction.guild.channels.create(channelOptions)
-
+  store.setTicketChannel(interaction.guild.id, channel,interaction.user.id)
   const content = t(lang, 'tickets.new.candidate', {
     userId: interaction.user.id,
     age,
@@ -52,7 +52,7 @@ export async function createCandidateTicket(interaction, lang, formData, config)
   const container = new ContainerBuilder()
     .addTextDisplayComponents(text)
     .addActionRowComponents(new ActionRowBuilder().addComponents(buttonClose, buttonProcess))
-  store.addLogMessageInChannel(interaction.guild.id,channel.id, "FairPlay", content,"https://fairplay.video/favicon.ico")
+  await store.addLogMessageInChannel(interaction.guild.id,channel.id, "FairPlay", content,"https://fairplay.video/favicon.ico")
   
   await channel.send({ flags: MessageFlags.IsComponentsV2, components: [container] })
 
