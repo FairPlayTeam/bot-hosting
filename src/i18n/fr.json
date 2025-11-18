@@ -69,7 +69,8 @@
     },
     "close": {
       "confirm": "Êtes-vous sûr de vouloir fermer ce ticket ?",
-      "soon": "Ce ticket sera fermé dans un instant."
+      "soon": "Ce ticket sera fermé dans un instant.",
+      "mpLog": "Un de vos ticket à été fermé. Vous pouvez consulter l'historique de la conversation de votre ticket à cette adresse https://discord.fairplay.video/{channelId}"
     }
   },
   "config": {

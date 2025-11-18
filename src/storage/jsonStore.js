@@ -63,13 +63,24 @@ export class JsonStore {
 
     return !!this.data[guildId].channeConfig[channel.id].isTicket
   }
-  setTicketChannel(guildId, channel) {
+  setTicketChannel(guildId, channel, userId) {
     this.data[guildId] = this.data[guildId] || {}
-    this.data[guildId].channeConfig = this.data[guildId].channeConfig || {}
-    this.data[guildId].channeConfig[channel.id] = this.data[guildId].channeConfig[channel.id]  || {}
-    this.data[guildId].channeConfig[channel.id].isTicket = true
+    this.data[guildId].channelConfig = this.data[guildId].channelConfig || {}
+    this.data[guildId].channelConfig[channel.id] = this.data[guildId].channelConfig[channel.id]  || {}
+    this.data[guildId].channelConfig[channel.id].isTicket = true
+    this.data[guildId].channelConfig[channel.id].ticketUserId = userId
+
     this.save()
     return true
+  } 
+
+  async getTicketUser(guildId, channel){
+    this.data[guildId] = this.data[guildId] || {}
+    this.data[guildId].channelConfig = this.data[guildId].channelConfig || {}
+    this.data[guildId].channelConfig[channel.id] = this.data[guildId].channelConfig[channel.id]  || {}
+    const userId= this.data[guildId].channelConfig[channel.id].ticketUserId
+    const user = await this.client.users.fetch(userId);
+    return user
   }
   async logMessageChannel(guildId, message) {
     if (message.content==="" && message.attachments?.size===0)return

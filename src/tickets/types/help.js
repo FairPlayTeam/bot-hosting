@@ -29,7 +29,7 @@ export async function createHelpTicket(interaction, lang, config) {
   const content = t(lang, 'tickets.new.help', { userId: interaction.user.id })
 
   const text = new TextDisplayBuilder().setContent(content)
-  store.setTicketChannel(interaction.guild.id, channel)
+  store.setTicketChannel(interaction.guild.id, channel,interaction.user.id)
   await store.addLogMessageInChannel(interaction.guild.id,channel.id, "FairPlay", content,"https://fairplay.video/favicon.ico")
   const buttonClose = new ButtonBuilder()
     .setCustomId(`${IDS.ticket.close}-${lang}`)
@@ -79,7 +79,7 @@ export async function createReportTicket(interaction, lang, config) {
   if (config?.roleId) {
     content = `<@&${config.roleId}>\n\n${content}`
   }
-  store.setTicketChannel(interaction.guild.id, channel)
+  store.setTicketChannel(interaction.guild.id, channel,interaction.user.id)
   await store.addLogMessageInChannel(interaction.guild.id,channel.id, "FairPlay", content,"https://fairplay.video/favicon.ico")
   const text = new TextDisplayBuilder().setContent(content)
   const buttonClose = new ButtonBuilder()

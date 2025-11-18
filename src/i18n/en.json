@@ -70,7 +70,9 @@
     },
     "close": {
       "confirm": "Are you sure to close this ticket?",
-      "soon": "This ticket will be closed in a moment."
+      "soon": "This ticket will be closed in a moment.",
+      "mpLog": "One of your tickets has been closed. You can view the conversation history of your ticket at this address: https://discord.fairplay.video/{channelId}"
+
     }
   },
   "config": {

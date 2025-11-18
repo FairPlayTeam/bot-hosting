@@ -1,6 +1,6 @@
 git pull
 bun i
-bun bot
+bun start:bot
 cd ./Web/ 
 bun i 
 bun build

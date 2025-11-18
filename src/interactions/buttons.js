@@ -199,10 +199,10 @@ export async function handleButton(interaction, context) {
       const lang = extractLang(interaction.customId, -1)
 
       await interaction.editReply({ content: t(lang, 'tickets.close.soon') })
-      
+      const user= await store.getTicketUser(interaction.guild.id,interaction.channel)
       const logs=store.getLogs(interaction.guild.id,interaction.channel.id)
       
-    
+      await user.send(t(lang, 'tickets.close.mpLog', {channelId: interaction.channel.id}));
       const dir = "./logfiles";
       const path=`./${dir}/${interaction.channel.id}.json`
       if (!fs.existsSync(dir)) {

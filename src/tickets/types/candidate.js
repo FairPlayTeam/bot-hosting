@@ -27,7 +27,7 @@ export async function createCandidateTicket(interaction, lang, formData, config)
   }
 
   const channel = await interaction.guild.channels.create(channelOptions)
-
+  store.setTicketChannel(interaction.guild.id, channel,interaction.user.id)
   const content = t(lang, 'tickets.new.candidate', {
     userId: interaction.user.id,
     age,
