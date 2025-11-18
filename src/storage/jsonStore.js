@@ -4,9 +4,7 @@ import * as tools from './tools.js'
 
 export class JsonStore {
   constructor(path = 'data.json', client) {
-  constructor(path = 'data.json', client) {
     this.path = path
-    this.client = client
     this.client = client
     if (!fs.existsSync(this.path)) {
       fs.writeFileSync(this.path, JSON.stringify({}))
@@ -100,8 +98,6 @@ export class JsonStore {
     this.data[guildId].logChannel[channelId] = this.data[guildId].logChannel[channelId] || []
     const cleanContent = await cleanMessage(message.content,this.client, message.guild.id)
     const content = `${cleanContent}${attachementUrls}`
-    const cleanContent = await cleanMessage(message.content,this.client, message.guild.id)
-    const content = `${cleanContent}${attachementUrls}`
     const entry = {
       author: message.author.tag,
       content: content,
@@ -115,11 +111,7 @@ export class JsonStore {
     
     this.save()
   }
-  async addLogMessageInChannel(guildId,channelId, author, content,avatar){
-    this.data[guildId] = this.data[guildId] || {}
-    this.data[guildId].logChannel = this.data[guildId].logChannel || {}
-    this.data[guildId].logChannel[channelId] = this.data[guildId].logChannel[channelId] || []
-    const cleanContent = await cleanMessage(content,this.client, guildId)
+
   async addLogMessageInChannel(guildId,channelId, author, content,avatar){
     this.data[guildId] = this.data[guildId] || {}
     this.data[guildId].logChannel = this.data[guildId].logChannel || {}
@@ -139,12 +131,7 @@ export class JsonStore {
     this.data[guildId].logChannel[channelId].push(entry)
     this.save()
   }
-  async deleteLogMessageChannel(guildId, message){
-    const channelId= message.channel.id
-    let attachementUrls=""
-    if (message.attachments?.size>0) {attachementUrls=`\n[Attachments]\n${message.attachments.map(a => a.url).join("\n")}`}
-    const cleanContent = await cleanMessage(message.content,this.client, message.guild.id)
-    const content = `${cleanContent}${attachementUrls}`
+
   async deleteLogMessageChannel(guildId, message){
     const channelId= message.channel.id
     let attachementUrls=""
@@ -156,7 +143,6 @@ export class JsonStore {
     this.data[guildId].logChannel[channelId] = this.data[guildId].logChannel[channelId] || []
     const logs = this.data[guildId].logChannel[channelId] 
     const index = logs.findIndex(entry => entry.author === message.author && entry.content === content);
-    const index = logs.findIndex(entry => entry.author === message.author && entry.content === content);
     logs.splice(index, 1);
     this.data[guildId].logChannel[channelId] =logs
     this.data[guildId].logChannel[channelId] =logs
@@ -166,7 +152,6 @@ export class JsonStore {
 
 
   }
-  deleteLogsChannel(guildId, channelId){
   deleteLogsChannel(guildId, channelId){
     delete this.data[guildId].logChannel[channelId];
     this.save()
@@ -270,55 +255,4 @@ async function cleanMessage(text, client, guildId) {
 
 
 
-
-
-async function cleanMessage(text, client, guildId) {
-    let content = text;
-    const userIds = [...text.matchAll(/<@!?(\d+)>/g)].map(m => m[1]);
-    const roleIds = [...text.matchAll(/<@&(\d+)>/g)].map(m => m[1]);
-
-
-    const users = {};
-    for (const id of userIds) {
-        try {
-            const user = await client.users.fetch(id);
-            users[id] = user.username;
-        } catch {
-            users[id] = null;
-        }
-    }
-
-    const roles = {};
-    try {
-        const guild = await client.guilds.fetch(guildId);
-        for (const id of roleIds) {
-            try {
-                const role = await guild.roles.fetch(id);
-                roles[id] = role?.name || null;
-            } catch {
-                roles[id] = null;
-            }
-        }
-    } catch {
-    }
-
-
-    content = content.replace(/<@!?(\d+)>/g, (match, id) => {
-        return users[id] ? `@${users[id]}` : match;
-    });
-
-    content = content.replace(/<@&(\d+)>/g, (match, id) => {
-        return roles[id] ? `@${roles[id]}` : match;
-    });
-
-    content = content.replace(/<:([a-zA-Z0-9_]+):(\d+)>/g,
-        (match, name, id) => `<img src="https://cdn.discordapp.com/emojis/${id}.png" alt="${name}" class="emoji" style="width:24px;height:24px;vertical-align:middle;display:inline-block;">`
-    );
-
-    content = content.replace(/<a:([a-zA-Z0-9_]+):(\d+)>/g,
-        (match, name, id) => `<img src="https://cdn.discordapp.com/emojis/${id}.gif" alt="${name}" class="emoji" style="width:24px;height:24px;vertical-align:middle;display:inline-block;">`
-    );
-
-    return content;
-}
 
