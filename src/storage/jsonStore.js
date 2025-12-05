@@ -58,10 +58,10 @@ export class JsonStore {
   }
   isTicketChannel(guildId, channel) {
     this.data[guildId] = this.data[guildId] || {}
-    this.data[guildId].channeConfig = this.data[guildId].channeConfig || {}
-    this.data[guildId].channeConfig[channel.id] = this.data[guildId].channeConfig[channel.id]  || {}
+    this.data[guildId].channelConfig = this.data[guildId].channelConfig || {}
+    this.data[guildId].channelConfig[channel.id] = this.data[guildId].channelConfig[channel.id]  || {}
 
-    return !!this.data[guildId].channeConfig[channel.id].isTicket
+    return !!this.data[guildId].channelConfig[channel.id].isTicket
   }
   setTicketChannel(guildId, channel, userId) {
     this.data[guildId] = this.data[guildId] || {}
